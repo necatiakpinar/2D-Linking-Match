@@ -1,10 +1,17 @@
 ﻿using System;
+using Data.Controllers;
 
 namespace Data.PersistentData
 {
     [Serializable]
     public class GameplayData
     {
-        public int PlayerLevel;
+        public LevelDataController LevelDataController;
+        
+        public GameplayData()
+        {
+            LevelDataController = new LevelDataController();
+        }
+        
     }
 }
