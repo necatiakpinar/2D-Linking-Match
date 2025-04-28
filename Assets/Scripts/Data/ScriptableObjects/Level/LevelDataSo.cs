@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Data.Models;
+using Interfaces;
 using Miscs;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace Data.ScriptableObjects.Level
 {
     [Serializable]
     [CreateAssetMenu(fileName = "SO_LevelData_000", menuName = "Data/ScriptableObjects/LevelData")]
-    public class LevelDataSo : ScriptableObject
+    public class LevelDataSo : ScriptableObject, ILevelData
     {
         [SerializeField] private int _levelIndex;
         [SerializeField] private LevelType _levelType;
