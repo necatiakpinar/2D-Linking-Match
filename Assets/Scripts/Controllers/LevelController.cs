@@ -36,8 +36,8 @@ namespace Controllers
             }
 
             _currentLevelData = _levelContainerData.Levels[_currentLevelIndex];
-
-            _logger.Log($"Current level index: {_currentLevelIndex}");
+            
+            _logger.Log($"Current level index: {_currentLevelData.GridSize.x} x {_currentLevelData.GridSize.y}");
         }
     }
 }

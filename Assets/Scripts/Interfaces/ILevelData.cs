@@ -11,6 +11,6 @@ namespace Interfaces
         LevelType LevelType { get; }
         List<LevelObjectiveData> LevelObjectives { get; }
         int LevelRewardCoin { get; }
-        Vector2Int GridSize { get; }
+        IVector2Int GridSize { get; }
     }
 }

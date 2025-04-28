@@ -1,11 +1,12 @@
 ﻿using Cysharp.Threading.Tasks;
 using Data.Models;
+using Interfaces;
 using Miscs;
 using UnityEngine;
 
 namespace Abstracts
 {
-    public abstract class BaseTileElement : MonoBehaviour
+    public abstract class BaseTileElement : MonoBehaviour, ITileElement
     {
         [SerializeField] private GameElementType _elementType;
         [SerializeField] protected SpriteRenderer spriteRenderer;
