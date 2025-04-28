@@ -46,7 +46,9 @@ namespace Managers
         {
             _logger = new UnityLogger();
             _objectFactory = new UnityObjectFactory(_logger);
+
             await LoadAddressables();
+
             _levelController = new LevelController(_levelContainerSo, _logger);
             _gridController = new GridController(_gridDataSo, _objectFactory, _levelController.CurrentLevelData, new UnityTransform(_gridParent), _logger);
             _gridController.CreateGrid();
