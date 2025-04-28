@@ -1,0 +1,101 @@
+﻿using System.Collections.Generic;
+using Interfaces;
+using Miscs;
+using UnityEngine;
+
+namespace Abstracts
+{
+    public abstract class BasePool<T> : MonoBehaviour where T : MonoBehaviour, IPoolable<T>
+    {
+        [SerializeField] private List<PoolObject<T>> _poolObjects;
+
+        private Dictionary<GameElementType, Queue<T>> _poolDictionary;
+        private Dictionary<GameElementType, T> _prefabDictionary; 
+
+        private void OnEnable()
+        {
+            _poolDictionary = new Dictionary<GameElementType, Queue<T>>();
+            _prefabDictionary = new Dictionary<GameElementType, T>();
+
+            foreach (var poolObject in _poolObjects)
+            {
+                _poolDictionary[poolObject.ElementType] = new Queue<T>();
+                _prefabDictionary[poolObject.ElementType] = poolObject.ObjectPf;
+            }
+        }
+
+        private void OnDisable()
+        {
+            ClearAllPools();
+        }
+
+        public T SpawnFromPool(GameElementType elementType, Vector3 position, Quaternion rotation = default, Transform parent = null)
+        {
+            if (!_poolDictionary.TryGetValue(elementType, out var objectQueue))
+            {
+                Debug.LogWarning($"No pool with ID {elementType} found!");
+                return null;
+            }
+
+            T objectToSpawn;
+
+            if (objectQueue.Count == 0)
+            {
+                if (!_prefabDictionary.TryGetValue(elementType, out var prefab))
+                {
+                    Debug.LogWarning($"No prefab found for element type {elementType}!");
+                    return null;
+                }
+
+                objectToSpawn = Instantiate(prefab);
+                objectToSpawn.gameObject.SetActive(false);
+            }
+            else
+            {
+                objectToSpawn = objectQueue.Dequeue();
+            }
+
+            if (parent != null)
+                objectToSpawn.transform.SetParent(parent);
+
+            objectToSpawn.transform.localPosition = position;
+            objectToSpawn.transform.rotation = rotation;
+            objectToSpawn.gameObject.SetActive(true);
+
+            objectToSpawn.OnSpawn();
+
+            return objectToSpawn;
+        }
+
+        public void ReturnToPool(GameElementType elementType, T obj)
+        {
+            if (!_poolDictionary.ContainsKey(elementType))
+            {
+                Debug.LogWarning($"No pool with ID {elementType} found!");
+                return;
+            }
+
+            obj.gameObject.SetActive(false);
+            _poolDictionary[elementType].Enqueue(obj);
+        }
+
+        public void ClearAllPools()
+        {
+            foreach (var keyValuePair in _poolDictionary)
+            {
+                var objectQueue = keyValuePair.Value;
+
+                while (objectQueue.Count > 0)
+                {
+                    T obj = objectQueue.Dequeue();
+                    if (obj == null)
+                        continue;
+
+                    Destroy(obj.gameObject);
+                }
+            }
+
+            _poolDictionary.Clear();
+        }
+    }
+}

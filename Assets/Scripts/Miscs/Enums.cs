@@ -40,4 +40,11 @@
         Hard,
         VeryHard,
     }
+    
+    public enum PlayableEntitySetType
+    {
+        Set1,
+        Set2,
+        Set3
+    }
 }
