@@ -9,13 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb21f1b939a54644b05b439866da5bcc, type: 3}
-  m_Name: SO_Level_000
+  m_Script: {fileID: 11500000, guid: 10c11ce3248340a79203fec968a2e6dc, type: 3}
+  m_Name: SO_TileMonoAttributes
   m_EditorClassIdentifier: 
-  _levelIndex: 0
-  _levelType: 0
-  _levelObjectives:
-  - ObjectiveType: 51231
-    ObjectiveCount: 20
-  _levelRewardCoin: 100
-  _gridSize: {x: 5, y: 5}
+  _explodeDuration: 1

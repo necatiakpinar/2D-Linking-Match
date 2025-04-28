@@ -2,7 +2,7 @@
 
 namespace Data.ScriptableObjects.Attributes
 {
-    [CreateAssetMenu(fileName = "SO_TileMonoAttribute", menuName = "Data/ScriptableObjects/TileMonoData", order = 1)]
+    [CreateAssetMenu(fileName = "SO_TileMonoAttributes", menuName = "Data/ScriptableObjects/Attributes/TileMonoAttributes", order = 1)]
     public class TileMonoAttributesSo : ScriptableObject
     {
         [SerializeField] private float _explodeDuration = 1.0f;

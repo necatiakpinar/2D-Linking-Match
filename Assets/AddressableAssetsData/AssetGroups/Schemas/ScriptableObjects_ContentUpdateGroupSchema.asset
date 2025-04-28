@@ -9,13 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb21f1b939a54644b05b439866da5bcc, type: 3}
-  m_Name: SO_Level_000
+  m_Script: {fileID: 11500000, guid: 5834b5087d578d24c926ce20cd31e6d6, type: 3}
+  m_Name: ScriptableObjects_ContentUpdateGroupSchema
   m_EditorClassIdentifier: 
-  _levelIndex: 0
-  _levelType: 0
-  _levelObjectives:
-  - ObjectiveType: 51231
-    ObjectiveCount: 20
-  _levelRewardCoin: 100
-  _gridSize: {x: 5, y: 5}
+  m_Group: {fileID: 11400000, guid: cccb7fb93d6505549be5150799b7765f, type: 2}
+  m_StaticContent: 0

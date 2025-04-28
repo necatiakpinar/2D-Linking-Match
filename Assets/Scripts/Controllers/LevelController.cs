@@ -20,7 +20,6 @@ namespace Controllers
         {
             _levelContainerSo = levelContainerSo;
             LoadGameplayLevel();
-
         }
 
         private void LoadGameplayLevel()
