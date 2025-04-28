@@ -8,9 +8,11 @@ using Data.ScriptableObjects.Attributes;
 using Data.ScriptableObjects.Containers;
 using Data.ScriptableObjects.Level;
 using EventBus.Events;
+using Factories;
 using Helpers;
 using Loggers;
 using UnityEngine;
+using UnityObjects;
 
 namespace Managers
 {
@@ -26,7 +28,9 @@ namespace Managers
         private LevelController _levelController;
         private GridController _gridController;
         private InputController _inputController;
+
         private UnityLogger _logger;
+        private UnityObjectFactory _objectFactory;
 
         private void Awake()
         {
@@ -41,8 +45,11 @@ namespace Managers
         private async UniTask Init()
         {
             _logger = new UnityLogger();
+            _objectFactory = new UnityObjectFactory(_logger);
             await LoadAddressables();
             _levelController = new LevelController(_levelContainerSo, _logger);
+            _gridController = new GridController(_gridDataSo, _objectFactory, _levelController.CurrentLevelData, new UnityTransform(_gridParent), _logger);
+            _gridController.CreateGrid();
         }
 
         private async UniTask LoadAddressables()

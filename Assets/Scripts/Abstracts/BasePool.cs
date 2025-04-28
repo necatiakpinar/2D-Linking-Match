@@ -29,7 +29,7 @@ namespace Abstracts
             ClearAllPools();
         }
 
-        public T SpawnFromPool(GameElementType elementType, Vector3 position, Quaternion rotation = default, Transform parent = null)
+        public T SpawnFromPool(GameElementType elementType, IVector3 position, Quaternion rotation = default, ITransform parent = null)
         {
             if (!_poolDictionary.TryGetValue(elementType, out var objectQueue))
             {
@@ -56,9 +56,9 @@ namespace Abstracts
             }
 
             if (parent != null)
-                objectToSpawn.transform.SetParent(parent);
+                objectToSpawn.Transform.SetParent(parent);
 
-            objectToSpawn.transform.localPosition = position;
+            objectToSpawn.Transform.LocalPosition = position;
             objectToSpawn.transform.rotation = rotation;
             objectToSpawn.gameObject.SetActive(true);
 

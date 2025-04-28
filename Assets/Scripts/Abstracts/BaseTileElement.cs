@@ -3,6 +3,7 @@ using Data.Models;
 using Interfaces;
 using Miscs;
 using UnityEngine;
+using UnityObjects;
 
 namespace Abstracts
 {
@@ -14,6 +15,7 @@ namespace Abstracts
         protected BaseTileMono tileMono;
         protected ElementModel elementModel;
         public GameElementType ElementType => _elementType;
+        public ITransform Transform => new UnityTransform(transform);
         public BaseTileMono TileMono => tileMono;
 
         public void OnSpawn()

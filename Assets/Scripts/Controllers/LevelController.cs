@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using Data.PersistentData;
+﻿using Data.PersistentData;
 using Interfaces;
-using Miscs;
 
 namespace Controllers
 {
@@ -11,10 +9,8 @@ namespace Controllers
         private readonly ILogger _logger;
         private ILevelData _currentLevelData;
         private int _currentLevelIndex;
-        private Dictionary<GameElementType, int> _levelObjectives = new Dictionary<GameElementType, int>();
 
         public ILevelData CurrentLevelData => _currentLevelData;
-        public Dictionary<GameElementType, int> LevelObjectives => _levelObjectives;
 
         public LevelController(ILevelContainer levelContainerData, ILogger logger)
         {
@@ -36,7 +32,6 @@ namespace Controllers
             }
 
             _currentLevelData = _levelContainerData.Levels[_currentLevelIndex];
-            
             _logger.Log($"Current level index: {_currentLevelData.GridSize.x} x {_currentLevelData.GridSize.y}");
         }
     }

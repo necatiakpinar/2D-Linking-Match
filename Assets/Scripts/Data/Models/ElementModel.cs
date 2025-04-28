@@ -6,7 +6,18 @@ namespace Data.Models
     [Serializable]
     public class ElementModel
     {
-        public GameElementType ElementType;
+        private GameElementType _elementType;
+        
+        public GameElementType ElementType
+        {
+            get => _elementType;
+            set => _elementType = value;
+        }
+        
+        public ElementModel(GameElementType elementType)
+        {
+            ElementType = elementType;
+        }
 
         public virtual ElementModel Clone()
         {
