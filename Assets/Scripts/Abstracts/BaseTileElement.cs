@@ -19,9 +19,9 @@ namespace Abstracts
         public GameElementType ElementType => _elementType;
         public ITransform Transform => new UnityTransform(transform);
 
-        public void OnSpawn()
+        public async void OnSpawn()
         {
-
+            await Deselect();
         }
 
         public async virtual UniTask Init(ElementModel pElementModel, ITile tileMono)
@@ -35,10 +35,7 @@ namespace Abstracts
         {
             TileMono = newTile as BaseTileMono;
             if (TileMono == null)
-            {
-                LoggerUtil.LogError("TileMono is null.");
                 return;
-            }
 
             transform.parent = ((UnityTransform)TileMono.Transform).TransformRef;
             TileMono.SetTileElement(this);

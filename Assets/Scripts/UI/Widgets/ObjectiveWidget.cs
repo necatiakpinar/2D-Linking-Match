@@ -1,10 +1,8 @@
-﻿using System;
-using Abstracts;
+﻿using Abstracts;
 using Cysharp.Threading.Tasks;
 using EventBus;
 using EventBus.Events;
 using Interfaces;
-using Miscs;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,7 +34,8 @@ namespace UI.Widgets
             _objectiveData = objectiveData;
             _objectiveIcon.sprite = objectiveIcon;
             var remainingAmount = objectiveData.ObjectiveAmount;
-            _objectiveRemainingAmountLabel.text = remainingAmount > 0 ? objectiveData.ObjectiveAmount.ToString() : _finishedText;
+            var amountText = remainingAmount > 0 ? objectiveData.ObjectiveAmount.ToString() : _finishedText;
+            SetAmountLabel(amountText);
             await UniTask.CompletedTask;
         }
 
@@ -44,8 +43,15 @@ namespace UI.Widgets
         {
             if (updateLevelObjectiveUIEvent.ObjectiveType == _objectiveData.ObjectiveType)
             {
-                _objectiveRemainingAmountLabel.text = updateLevelObjectiveUIEvent.RemainingAmount.ToString();
+                var remainingAmount = updateLevelObjectiveUIEvent.RemainingAmount;
+                var amountText = remainingAmount > 0 ? remainingAmount.ToString() : _finishedText;
+                SetAmountLabel(amountText);
             }
+        }
+
+        private void SetAmountLabel(string amountText)
+        {
+            _objectiveRemainingAmountLabel.text = amountText;
         }
     }
 }

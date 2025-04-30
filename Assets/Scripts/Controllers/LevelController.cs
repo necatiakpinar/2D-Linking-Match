@@ -92,6 +92,7 @@ namespace Controllers
                 }
             }
 
+            // todo: can work multiple, careful!
             if (_levelObjectives.Count == 0)
             {
                 //todo: level finished!

@@ -54,11 +54,18 @@ namespace StateMachines.States
         public async UniTask Enter(IStateParameters parameters = null)
         {
             _logger.Log("InputState.Enter");
+            await CheckForAnyLinkAvailable();
             AddEventBindings();
             _latestAddedTile = null;
             _selectedTiles.Clear();
         }
 
+        private async UniTask CheckForAnyLinkAvailable()
+        {
+            await EventBus<TryToCheckAnyLinkExistEvent, UniTask>.Raise(new TryToCheckAnyLinkExistEvent())[0];
+            await UniTask.CompletedTask;
+        }
+        
         private async void OnTilePressed(TilePressedEvent @event)
         {
             if (@event.FirstAddedTile == null || @event.FirstAddedTile.TileElement == null)

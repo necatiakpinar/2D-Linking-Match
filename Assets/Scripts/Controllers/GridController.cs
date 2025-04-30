@@ -16,6 +16,8 @@ namespace Controllers
 {
     public class GridController : IGridController
     {
+        private EventBinding<TryToCheckAnyLinkExistEvent, UniTask> _tryToCheckAnyLinkExistEvent;
+
         private readonly IGridData _gridData;
         private readonly IObjectFactory _objectFactory;
         private readonly ILevelData _currentLevelData;
@@ -61,6 +63,18 @@ namespace Controllers
 
             Tiles = new ITile[_currentLevelData.GridSize.x, _currentLevelData.GridSize.y + 1];
             TilesDict = new Dictionary<IVector2Int, ITile>();
+            AddEventListeners();
+        }
+
+        public void AddEventListeners()
+        {
+            _tryToCheckAnyLinkExistEvent = new EventBinding<TryToCheckAnyLinkExistEvent, UniTask>(TryToCheckAnyLinkExist);
+            EventBus<TryToCheckAnyLinkExistEvent, UniTask>.Register(_tryToCheckAnyLinkExistEvent);
+        }
+
+        public void RemoveEventListeners()
+        {
+            EventBus<TryToCheckAnyLinkExistEvent, UniTask>.Deregister(_tryToCheckAnyLinkExistEvent);
         }
 
         public async void CreateGrid()
@@ -107,7 +121,7 @@ namespace Controllers
                 var neighbours = new Dictionary<TileDirectionType, ITile>();
                 var aboveNeighbours = new Dictionary<TileDirectionType, ITile>();
                 var belowNeighbours = new Dictionary<TileDirectionType, ITile>();
-                
+
                 foreach (var direction in _tileDirectionCoordinates)
                 {
                     var neighbourCoords = tile.Coordinates.Add(direction.Value);
@@ -126,6 +140,99 @@ namespace Controllers
                 tile.AboveNeighbours = aboveNeighbours;
                 tile.BelowNeighbours = belowNeighbours;
             }
+        }
+
+        private async UniTask TryToCheckAnyLinkExist(TryToCheckAnyLinkExistEvent @event)
+        {
+            var linkGroups = FindTileLinkGroups();
+            if (linkGroups.Count > 0)
+                return;
+
+            await ShuffleTileElements();
+        }
+
+        private async UniTask ShuffleTileElements()
+        {
+            const int maxTries = 20;
+            var tries = 0;
+
+            var tileList = new List<ITile>();
+            foreach (var tile in TilesDict.Values)
+            {
+                if (tile.IsSpawner || tile.TileElement == null)
+                    continue;
+
+                tileList.Add(tile);
+            }
+
+            do
+            {
+                tries++;
+                var elements = new List<ITileElement>();
+                foreach (var tile in tileList)
+                {
+                    elements.Add(tile.TileElement);
+                    tile.TileElement.SetTile(null); 
+                    tile.TileElement = null;
+                }
+
+                elements.Shuffle(); 
+
+                for (int i = 0; i < tileList.Count; i++)
+                {
+                    var tile = tileList[i];
+                    var element = elements[i];
+
+                    tile.SetTileElement(element);
+                    element.SetTile(tile);
+                }
+
+                var matchGroups = FindTileLinkGroups();
+
+                if (matchGroups.Count > 0)
+                {
+                    _logger.Log($"Shuffle completed with match in {tries} tries.");
+                    return;
+                }
+
+            } while (tries < maxTries);
+
+            _logger.LogError("Shuffle failed to produce a valid match after max attempts.");
+        }
+        
+        private List<List<ITile>> FindTileLinkGroups()
+        {
+            var visited = new HashSet<ITile>();
+            var matchGroups = new List<List<ITile>>();
+
+            foreach (var tile in TilesDict.Values)
+            {
+                if (visited.Contains(tile) || tile.TileElement == null)
+                    continue;
+
+                var currentGroup = new List<ITile>();
+                FloodFill(tile, tile.TileElement.ElementType, currentGroup, visited);
+
+                if (currentGroup.Count >= 3)
+                    matchGroups.Add(currentGroup);
+            }
+
+            return matchGroups;
+        }
+
+        private void FloodFill(ITile tile, GameElementType matchType, List<ITile> group, HashSet<ITile> visited)
+        {
+            if (tile == null || visited.Contains(tile))
+                return;
+
+            if (tile.TileElement == null || tile.TileElement.ElementType != matchType)
+                return;
+
+            visited.Add(tile);
+            group.Add(tile);
+
+            foreach (var neighbour in tile.Neighbours.Values)
+                FloodFill(neighbour, matchType, group, visited);
         }
     }
 }

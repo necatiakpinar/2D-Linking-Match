@@ -6,7 +6,10 @@ namespace Interfaces.Controllers
     {
         ITile[,] Tiles { get; }
         public Dictionary<IVector2Int, ITile> TilesDict { get; set; } 
+        void AddEventListeners();
+        void RemoveEventListeners();
         void CreateGrid();
         void CalculateTileNeighbours();
+        
     }
 }

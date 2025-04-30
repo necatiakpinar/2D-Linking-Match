@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using Abstracts;
+﻿using Abstracts;
 using Interfaces;
 using Miscs;
-using UnityEngine;
 
 namespace EventBus.Events
 {
@@ -35,4 +33,9 @@ namespace EventBus.Events
             ElementType = elementType;
         }
     }
+    
+    public struct TryToCheckAnyLinkExistEvent : IEvent
+    {
+    }
+    
 }

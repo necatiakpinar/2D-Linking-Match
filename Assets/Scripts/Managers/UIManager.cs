@@ -3,6 +3,7 @@ using Abstracts;
 using Cysharp.Threading.Tasks;
 using EventBus;
 using EventBus.Events;
+using Helpers;
 using Miscs;
 using UnityEngine;
 using UnityEngine.UI;
@@ -52,7 +53,7 @@ namespace Managers
             {
                 if (_activeWindows.TryGetValue(cachedWindow.WindowType, out _))
                 {
-                    Debug.LogWarning($"Window {cachedWindow.WindowType} is already active!");
+                    LoggerUtil.LogWarning($"Window {cachedWindow.WindowType} is already active!");
                     continue;
                 }
 
@@ -74,11 +75,9 @@ namespace Managers
         private async UniTask OnHideWindow(HideWindowEvent hideWindowEvent)
         {
             if (_activeWindows.TryGetValue(hideWindowEvent.WindowType, out var existingWindow))
-            {
                 await existingWindow.Hide();
-            }
             else
-                Debug.LogWarning($"Window {hideWindowEvent.WindowType} is not active!");
+                LoggerUtil.LogWarning($"Window {hideWindowEvent.WindowType} is not active!");
         }
 
         private async UniTask OnDisposeWindow(DisposeWindowEvent disposeWindowEvent)
@@ -86,9 +85,7 @@ namespace Managers
             if (_activeWindows.TryGetValue(disposeWindowEvent.WindowType, out var existingWindow))
             {
                 if (existingWindow.IsCached)
-                {
                     await existingWindow.Hide();
-                }
                 else
                 {
                     existingWindow.Dispose();
@@ -102,11 +99,9 @@ namespace Managers
             if (_activeWindows.TryGetValue(@event.WindowType, out var existingWindow))
             {
                 if (!existingWindow.IsInitialized || @event.CanUpdate)
-                {
                     await existingWindow.Init(@event.Parameters);
-                }
                 else
-                    Debug.LogWarning($"Window {typeof(T).Name} is still initializing!");
+                    LoggerUtil.LogWarning($"Window {typeof(T).Name} is still initializing!");
 
                 return (T)existingWindow;
             }
@@ -114,7 +109,7 @@ namespace Managers
             var prefab = _windows.Find(w => w.WindowType == @event.WindowType);
             if (prefab == null)
             {
-                Debug.LogError($"Window prefab for type {@event.WindowType} not found!");
+                LoggerUtil.LogError($"Window prefab for type {@event.WindowType} not found!");
                 return null;
             }
 

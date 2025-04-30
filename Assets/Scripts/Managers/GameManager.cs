@@ -114,6 +114,9 @@ namespace Managers
             if (_levelController != null)
                 _levelController.RemoveEventListeners();
             
+            if (_gridController != null)
+                _gridController.RemoveEventListeners();
+            
             if (_levelStartState != null)
                 _levelStartState.RemoveEventBindings();
 
