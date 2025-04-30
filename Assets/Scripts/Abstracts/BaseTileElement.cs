@@ -1,5 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Data.Models;
+using DG.Tweening;
+using Helpers;
 using Interfaces;
 using Miscs;
 using UnityEngine;
@@ -12,7 +14,7 @@ namespace Abstracts
         [SerializeField] private GameElementType _elementType;
         [SerializeField] protected SpriteRenderer _spriteRenderer;
 
-        protected BaseTileMono TileMono;
+        protected ITile TileMono;
         protected ElementModel ElementModel;
         public GameElementType ElementType => _elementType;
         public ITransform Transform => new UnityTransform(transform);
@@ -21,10 +23,11 @@ namespace Abstracts
         {
 
         }
-        
-        public async virtual UniTask Init(ElementModel pElementModel)
+
+        public async virtual UniTask Init(ElementModel pElementModel, ITile tileMono)
         {
             ElementModel = pElementModel;
+            TileMono = tileMono;
             await UniTask.CompletedTask;
         }
 
@@ -33,15 +36,15 @@ namespace Abstracts
             TileMono = newTile as BaseTileMono;
             if (TileMono == null)
             {
-                Debug.LogError("TileMono is null.");
+                LoggerUtil.LogError("TileMono is null.");
                 return;
             }
-            
-            transform.parent = TileMono.transform;
+
+            transform.parent = ((UnityTransform)TileMono.Transform).TransformRef;
             TileMono.SetTileElement(this);
-            //transform.localPosition = Vector3.zero;
+            await transform.DOLocalMove(Vector3.zero, 0.2f).SetEase(Ease.InOutElastic).ToUniTask();
         }
-        
+
         public async virtual UniTask TryToActivate()
         {
             await UniTask.CompletedTask;
@@ -62,7 +65,11 @@ namespace Abstracts
             await UniTask.CompletedTask;
         }
 
-        public abstract UniTask PlayDestroy();
+        public async virtual UniTask PlayDestroy()
+        {
+            TileMono.TileElement = null;
+            await UniTask.CompletedTask;
+        }
 
         public void EnableSpriteRenderer()
         {

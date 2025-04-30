@@ -4,6 +4,8 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Interfaces;
 using StateMachines.StateParameters;
+using UnityEngine;
+using ILogger = Interfaces.ILogger;
 
 namespace StateMachines.States
 {
@@ -29,7 +31,7 @@ namespace StateMachines.States
 
         public async UniTask Enter(IStateParameters parameters = null)
         {
-            _logger.LogError("RefillState.Enter");
+            _logger.Log("RefillState.Enter");
             _refillStateParameters = (RefillStateParameters)parameters;
             if (_refillStateParameters == null)
             {
@@ -43,7 +45,7 @@ namespace StateMachines.States
 
         private async UniTask TryToRefillActivatedTiles()
         {
-            var sortedActivatedTiles = _refillStateParameters.ActivatedTiles.OrderByDescending(x => x.Transform.Position.y).ToList();
+            var sortedActivatedTiles = _refillStateParameters.ActivatedTiles.OrderBy(x => x.Transform.Position.y).ToList();
 
             foreach (var tile in sortedActivatedTiles)
             {
@@ -56,22 +58,9 @@ namespace StateMachines.States
                 await tile.TryToRequestTileElement();
             }
 
-            // var activatedTileNode = _refillStateParameters.ActivatedTiles.First;
-            //
-            // while (activatedTileNode != null)
-            // {
-            //     var tile = activatedTileNode.Value;
-            //     if (tile == null)
-            //         _logger.LogError("Tile is null.");
-            //     else
-            //         await tile.TryToRequestTileElement();
-            //
-            //     activatedTileNode = activatedTileNode.Next;
-            // }
-
             await UniTask.CompletedTask;
         }
-        
+
         public void Update()
         {
         }

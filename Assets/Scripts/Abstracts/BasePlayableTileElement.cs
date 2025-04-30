@@ -4,6 +4,7 @@ using Data.Models;
 using DG.Tweening;
 using EventBus;
 using EventBus.Events;
+using Helpers;
 using Interfaces;
 using Miscs;
 using UnityEngine;
@@ -22,14 +23,14 @@ namespace Abstracts
         {
         }
 
-        public async override UniTask Init(ElementModel pElementModel)
+        public async override UniTask Init(ElementModel pElementModel, ITile tileMono)
         {
-            await base.Init(pElementModel);
+            await base.Init(pElementModel,tileMono);
             EnableSpriteRenderer();
             var spriteAtlas = await AddressablesLoader.LoadAssetAsync<SpriteAtlas>(AddressablesKeys.GetKey(AddressablesKeys.AssetKeys.SA_Set1TileElements));
             if (spriteAtlas == null)
             {
-                Debug.LogError($"SpriteAtlas not found for {ElementType}");
+                LoggerUtil.LogError($"SpriteAtlas not found for {ElementType}");
                 return;
             }
 
@@ -82,6 +83,8 @@ namespace Abstracts
 
         public async override UniTask PlayDestroy()
         {
+            await base.PlayDestroy();
+            
             await Deselect();
             ReturnToPool(this);
             await UniTask.CompletedTask;

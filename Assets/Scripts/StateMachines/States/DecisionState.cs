@@ -27,7 +27,7 @@ namespace StateMachines.States
 
         public async UniTask Enter(IStateParameters parameters = null)
         {
-            _logger.LogError("DecisionState.Enter");
+            _logger.Log("DecisionState.Enter");
             _decisionStateParameters = (DecisionStateParameters)parameters;
             if (_decisionStateParameters == null)
             {

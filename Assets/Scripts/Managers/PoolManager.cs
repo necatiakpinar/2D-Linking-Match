@@ -37,7 +37,7 @@ namespace Managers
                 spawnGameplayElementPoolEvent.Position,
                 spawnGameplayElementPoolEvent.Rotation,
                 spawnGameplayElementPoolEvent.Parent);
-            await spawnedElement.Init(spawnGameplayElementPoolEvent.ElementModel);
+            await spawnedElement.Init(spawnGameplayElementPoolEvent.ElementModel, spawnGameplayElementPoolEvent.Tile);
             EventBus<AddTileElementEvent>.Raise(new AddTileElementEvent(spawnedElement));
             return spawnedElement;
         }

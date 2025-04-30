@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Helpers;
 using Interfaces;
 using Miscs;
 using UnityEngine;
@@ -33,7 +34,7 @@ namespace Abstracts
         {
             if (!_poolDictionary.TryGetValue(elementType, out var objectQueue))
             {
-                Debug.LogWarning($"No pool with ID {elementType} found!");
+                LoggerUtil.LogWarning($"No pool with ID {elementType} found!");
                 return null;
             }
 
@@ -43,7 +44,7 @@ namespace Abstracts
             {
                 if (!_prefabDictionary.TryGetValue(elementType, out var prefab))
                 {
-                    Debug.LogWarning($"No prefab found for element type {elementType}!");
+                    LoggerUtil.LogWarning($"No prefab found for element type {elementType}!");
                     return null;
                 }
 
@@ -71,7 +72,7 @@ namespace Abstracts
         {
             if (!_poolDictionary.ContainsKey(elementType))
             {
-                Debug.LogWarning($"No pool with ID {elementType} found!");
+                LoggerUtil.LogWarning($"No pool with ID {elementType} found!");
                 return;
             }
 

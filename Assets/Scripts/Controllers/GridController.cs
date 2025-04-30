@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Abstracts;
 using Adapters;
 using Cysharp.Threading.Tasks;
@@ -57,7 +58,7 @@ namespace Controllers
             _parentTransform = parentTransform;
             _logger = logger;
 
-            Tiles = new ITile[_currentLevelData.GridSize.x, _currentLevelData.GridSize.y];
+            Tiles = new ITile[_currentLevelData.GridSize.x, _currentLevelData.GridSize.y + 1];
             TilesDict = new Dictionary<IVector2Int, ITile>();
         }
 
@@ -65,28 +66,37 @@ namespace Controllers
         {
             for (int x = 0; x < _currentLevelData.GridSize.x; x++)
             {
-                for (int y = 0; y < _currentLevelData.GridSize.y; y++)
+                for (int y = 0; y < _currentLevelData.GridSize.y + 1; y++)
                 {
                     IVector3 tileSpawnPosition = new Vector3Adapter(new Vector3(x, y, 0));
                     IVector2Int tileCoordinates = new Vector2IntAdapter(new Vector2Int(x, y));
 
+                    bool isSpawner = y == _currentLevelData.GridSize.y;
                     var tile = _objectFactory.CreateObject<ITile>(_gridData.TilePrefab, _parentTransform, tileSpawnPosition);
+                    BasePlayableTileElement spawnedTileElement = null;
+                    if (!isSpawner)
+                        spawnedTileElement = await CreateTileElement(tile);
 
-                    var randomPlayableTileElement = PlayableEntityType.Type1.GetRandom();
-                    var tileElementModel = new ElementModel((GameElementType)randomPlayableTileElement);
-                    var spawnParameters = new SpawnGameplayElementPoolEvent(tileElementModel,
-                        new Vector3Adapter(Vector3.zero),
-                        UnityEngine.Quaternion.identity, //todo: convert this IQuaternion
-                        tile.Transform);
-                    var spawnedTileElement = await EventBus<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>.Raise(spawnParameters)[0];
+                    await tile.Init(tileCoordinates, spawnedTileElement, isSpawner);
 
-                    await tile.Init(tileCoordinates, spawnedTileElement);
                     Tiles[tileCoordinates.x, tileCoordinates.y] = tile;
                     TilesDict.Add(new Vector2Int(tileCoordinates.x, tileCoordinates.y), tile);
                 }
             }
 
             CalculateTileNeighbours();
+        }
+        private async Task<BasePlayableTileElement> CreateTileElement(ITile tile)
+        {
+            var randomPlayableTileElement = PlayableEntityType.Type1.GetRandom();
+            var tileElementModel = new ElementModel((GameElementType)randomPlayableTileElement);
+            var spawnParameters = new SpawnGameplayElementPoolEvent(tileElementModel,
+                tile,
+                new Vector3Adapter(Vector3.zero),
+                UnityEngine.Quaternion.identity, //todo: convert this IQuaternion
+                tile.Transform);
+            var spawnedTileElement = await EventBus<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>.Raise(spawnParameters)[0];
+            return spawnedTileElement;
         }
 
         public void CalculateTileNeighbours()
@@ -96,7 +106,7 @@ namespace Controllers
                 var neighbours = new Dictionary<TileDirectionType, ITile>();
                 var aboveNeighbours = new Dictionary<TileDirectionType, ITile>();
                 var belowNeighbours = new Dictionary<TileDirectionType, ITile>();
-
+                
                 foreach (var direction in _tileDirectionCoordinates)
                 {
                     var neighbourCoords = tile.Coordinates.Add(direction.Value);

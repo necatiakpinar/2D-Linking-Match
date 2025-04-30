@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using EventBus;
 using EventBus.Events;
@@ -14,16 +13,16 @@ namespace StateMachines.States
     {
         private LinkedList<ITile> _selectedTiles = new LinkedList<ITile>();
         private ITile _latestAddedTile;
-        private readonly ILogger _logger;
-
-        public Func<Type, IStateParameters, UniTask> ChangeState { get; set; }
-
         private EventBinding<TilePressedEvent> _tilePressedEventBinding;
         private EventBinding<TileReleasedEvent> _tileReleasedEventBinding;
         private EventBinding<HasAnyTileSelected, bool> _hasAnyTileSelectedEventBinding;
         private EventBinding<TryToAddTileEvent> _tryToAddTileEventBinding;
 
+        public Func<Type, IStateParameters, UniTask> ChangeState { get; set; }
+        
+        private readonly ILogger _logger;
         private readonly int _minTilesToCreateMatch = 3;
+        
         public InputState(ILogger logger)
         {
             _logger = logger;
@@ -54,7 +53,7 @@ namespace StateMachines.States
 
         public async UniTask Enter(IStateParameters parameters = null)
         {
-            _logger.LogError("InputState.Enter");
+            _logger.Log("InputState.Enter");
             AddEventBindings();
             _latestAddedTile = null;
             _selectedTiles.Clear();
@@ -89,7 +88,7 @@ namespace StateMachines.States
             {
                 var tile = selectedTileNode.Value;
                 if (tile == null)
-                    _logger.LogError("Tile is null.");
+                    _logger.Log("Tile is null.");
                 else
                     await tile.DeselectTile();
 

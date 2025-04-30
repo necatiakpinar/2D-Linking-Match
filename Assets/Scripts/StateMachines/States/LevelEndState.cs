@@ -16,7 +16,7 @@ namespace StateMachines.States
    
         public async UniTask Enter(IStateParameters parameters = null)
         {
-            _logger.LogError("LevelEndState.Enter");
+            _logger.Log("LevelEndState.Enter");
             await UniTask.CompletedTask;
         }
    

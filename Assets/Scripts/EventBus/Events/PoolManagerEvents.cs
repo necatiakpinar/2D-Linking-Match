@@ -8,13 +8,15 @@ namespace EventBus.Events
     public struct SpawnGameplayElementPoolEvent : IEvent
     {
         public ElementModel ElementModel;
+        public ITile Tile;
         public IVector3 Position;
         public Quaternion Rotation;
         public ITransform Parent;
         
-        public SpawnGameplayElementPoolEvent(ElementModel elementModel, IVector3 position, Quaternion rotation = default, ITransform parent = null)
+        public SpawnGameplayElementPoolEvent(ElementModel elementModel, ITile tile, IVector3 position, Quaternion rotation = default, ITransform parent = null)
         {
             ElementModel = elementModel;
+            Tile = tile;
             Position = position;
             Rotation = rotation;
             Parent = parent;

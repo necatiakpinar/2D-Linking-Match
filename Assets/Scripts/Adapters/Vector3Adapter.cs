@@ -1,5 +1,6 @@
 ﻿using Interfaces;
 
+
 namespace Adapters
 {
     public class Vector3Adapter : IVector3

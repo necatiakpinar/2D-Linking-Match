@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
+using Helpers;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using static UnityEngine.Debug;
 
 namespace Addressables
 {
@@ -32,12 +34,12 @@ public static class AddressablesLoader
                 }
                 else
                 {
-                    Debug.LogError($"Component of type {typeof(T).Name} not found on prefab loaded from key: {key}.");
+                    LoggerUtil.LogError($"Component of type {typeof(T).Name} not found on prefab loaded from key: {key}.");
                 }
             }
             else
             {
-                Debug.LogError($"Prefab not loaded from key: {key}.");
+                LogError($"Prefab not loaded from key: {key}.");
             }
 
             return null;

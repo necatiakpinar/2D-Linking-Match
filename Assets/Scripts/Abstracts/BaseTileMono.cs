@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using Adapters;
 using Cysharp.Threading.Tasks;
+using Data.Models;
 using EventBus;
 using EventBus.Events;
 using Extensions;
+using Helpers;
 using Interfaces;
 using Miscs;
 using UnityEngine;
@@ -14,15 +16,25 @@ namespace Abstracts
 {
     public class BaseTileMono : MonoBehaviour, ITile, IPointerDownHandler, IPointerEnterHandler, IPointerUpHandler
     {
+        [SerializeField] private SpriteRenderer _spriteRenderer;
+        
         private IVector2Int _coordinates;
         private ITileElement _tileElement;
+        private bool _isSpawner;
         private Dictionary<TileDirectionType, ITile> _neighbours = new();
         private Dictionary<TileDirectionType, ITile> _aboveNeighbours = new();
         private Dictionary<TileDirectionType, ITile> _belowNeighbours = new();
 
         public IVector2Int Coordinates => _coordinates;
-        public ITileElement TileElement => _tileElement;
+
+        public ITileElement TileElement
+        {
+            get => _tileElement;
+            set => _tileElement = value;
+        }
+
         public ITransform Transform => new UnityTransform(transform);
+        public bool IsSpawner => _isSpawner;
 
         public Dictionary<TileDirectionType, ITile> Neighbours
         {
@@ -42,11 +54,14 @@ namespace Abstracts
             set => _belowNeighbours = value;
         }
 
-        public async UniTask Init(IVector2Int coordinates, ITileElement slotObject)
+        public async UniTask Init(IVector2Int coordinates, ITileElement tileElement, bool isSpawner = false)
         {
             transform.name = $"Tile {coordinates.x} {coordinates.y}";
             _coordinates = coordinates;
-            SetTileElement(slotObject);
+            SetTileElement(tileElement);
+            _isSpawner = isSpawner;
+            if (_spriteRenderer != null)
+                _spriteRenderer.enabled = !isSpawner;
         }
 
         public void SetTileElement(ITileElement tileElement)
@@ -55,7 +70,7 @@ namespace Abstracts
             if (_tileElement == null)
                 return;
 
-            _tileElement.Transform.LocalPosition = new Vector3Adapter(Vector3.zero.ToDataVector3());
+            //_tileElement.Transform.LocalPosition = new Vector3Adapter(Vector3.zero.ToDataVector3());
         }
 
         public bool HasTileInNeighbours(ITile tile)
@@ -103,6 +118,7 @@ namespace Abstracts
         {
             await _tileElement.TryToActivate();
         }
+
         public async UniTask<bool> TryToDropTileElement(ITile requestedTile)
         {
             var hasBelowNeighbours = _belowNeighbours.Count > 0;
@@ -115,15 +131,14 @@ namespace Abstracts
 
         public async UniTask<bool> DropTileElement(ITile requestedTile)
         {
-            await TileElement.SetTile(requestedTile);
+            TileElement.SetTile(requestedTile);
             _tileElement = null;
             return true;
         }
 
         public async UniTask TryToRequestTileElement()
         {
-            var hasAboveNeighbours = _aboveNeighbours.Count > 0;
-            if (!hasAboveNeighbours)
+            if (_tileElement != null)
                 return;
 
             await RequestTileElement();
@@ -131,13 +146,48 @@ namespace Abstracts
 
         public async UniTask RequestTileElement()
         {
-            foreach (var aboveNeighbour in _aboveNeighbours.Values)
+            if (_isSpawner)
             {
-                if (aboveNeighbour != null && aboveNeighbour.TileElement != null)
+                var randomPlayableTileElement = PlayableEntityType.Type1.GetRandom();
+                var tileElementModel = new ElementModel((GameElementType)randomPlayableTileElement);
+                var spawnParameters = new SpawnGameplayElementPoolEvent(tileElementModel,
+                    this,
+                    new Vector3Adapter(Vector3.zero.ToDataVector3()),
+                    UnityEngine.Quaternion.identity, //todo: convert this IQuaternion
+                    Transform);
+                var spawnedTileElement = await EventBus<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>.Raise(spawnParameters)[0];
+
+                if (spawnedTileElement == null)
                 {
-                    var result = await aboveNeighbour.TryToDropTileElement(this);
-                    if (result)
-                        return;
+                    LoggerUtil.LogError("Spawned tile element is null");
+                    return;
+                }
+
+                spawnedTileElement.SetTile(this);
+            }
+            else
+            {
+                foreach (var aboveNeighbour in _aboveNeighbours.Values)
+                {
+                    if (aboveNeighbour == null)
+                        continue;
+
+                    if (aboveNeighbour.TileElement == null)
+                    {
+                        await aboveNeighbour.TryToRequestTileElement();
+                    }
+
+                    if (aboveNeighbour.TileElement != null && aboveNeighbour.TileElement is IPlayableTileElement)
+                    {
+                        var result = await aboveNeighbour.TryToDropTileElement(this);
+                        if (result)
+                        {
+                            if (!aboveNeighbour.IsSpawner)
+                                await aboveNeighbour.TryToRequestTileElement();
+                            
+                            return;
+                        }
+                    }
                 }
             }
         }
