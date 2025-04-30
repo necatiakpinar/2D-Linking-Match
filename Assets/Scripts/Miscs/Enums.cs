@@ -51,4 +51,9 @@
         Set2,
         Set3
     }
+
+    public enum WindowType
+    {
+        GameplayWindow = 10
+    }
 }

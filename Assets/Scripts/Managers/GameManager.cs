@@ -111,6 +111,9 @@ namespace Managers
 
         private void CleanupEvents()
         {
+            if (_levelController != null)
+                _levelController.RemoveEventListeners();
+            
             if (_levelStartState != null)
                 _levelStartState.RemoveEventBindings();
 

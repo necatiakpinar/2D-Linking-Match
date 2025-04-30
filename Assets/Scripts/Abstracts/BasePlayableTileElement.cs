@@ -72,6 +72,7 @@ namespace Abstracts
         public async override UniTask Activate()
         {
             await base.Activate();
+            
             await PlayDestroy();
         }
         
@@ -84,6 +85,7 @@ namespace Abstracts
         public async override UniTask PlayDestroy()
         {
             await base.PlayDestroy();
+            EventBus<UpdateLevelObjectiveEvent>.Raise(new UpdateLevelObjectiveEvent(ElementType,1));
             
             await Deselect();
             ReturnToPool(this);

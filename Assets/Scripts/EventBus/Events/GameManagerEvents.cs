@@ -3,10 +3,6 @@ using Miscs;
 
 namespace EventBus.Events
 {
-    public struct GetCurrentLevelDataEvent : IEvent
-    {
-    }
-
     public struct GetGameplayTimerEvent : IEvent
     {
         public float RemainingTime;

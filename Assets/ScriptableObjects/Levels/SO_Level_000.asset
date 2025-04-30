@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: SO_Level_000
   m_EditorClassIdentifier: 
   _levelIndex: 0
+  _moveAmount: 10
   _levelType: 0
   _levelObjectives:
-  - ObjectiveType: 51231
-    ObjectiveCount: 20
+  - _objectiveType: 51231
+    _objectiveAmount: 20
   _levelRewardCoin: 100
   _gridSize: {x: 5, y: 5}

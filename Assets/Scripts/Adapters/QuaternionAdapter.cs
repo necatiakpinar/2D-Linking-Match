@@ -4,7 +4,7 @@ namespace Adapters
 {
     public class QuaternionAdapter: IQuaternion
     {
-        private Data.Quaternion _quaternion;
+        private readonly Data.Quaternion _quaternion;
         
         public QuaternionAdapter(Data.Quaternion quaternion)
         {

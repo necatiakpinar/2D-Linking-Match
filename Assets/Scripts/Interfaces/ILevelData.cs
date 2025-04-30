@@ -8,8 +8,9 @@ namespace Interfaces
     public interface ILevelData
     {
         int LevelIndex { get; }
+        int MoveAmount { get; }
         LevelType LevelType { get; }
-        List<LevelObjectiveData> LevelObjectives { get; }
+        List<ILevelObjectiveData> LevelObjectives { get; }
         int LevelRewardCoin { get; }
         IVector2Int GridSize { get; }
     }

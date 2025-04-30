@@ -14,15 +14,30 @@ namespace Data.ScriptableObjects.Level
     public class LevelDataSo : ScriptableObject, ILevelData
     {
         [SerializeField] private int _levelIndex;
+        [SerializeField] private int _moveAmount;
         [SerializeField] private LevelType _levelType;
         [SerializeField] private List<LevelObjectiveData> _levelObjectives;
         [SerializeField] private int _levelRewardCoin = 100;
         [SerializeField] private UnityEngine.Vector2Int _gridSize;
-        
+
         public int LevelIndex => _levelIndex;
+        public int MoveAmount => _moveAmount;
         public LevelType LevelType => _levelType;
-        public List<LevelObjectiveData> LevelObjectives => _levelObjectives;
+        public List<ILevelObjectiveData> LevelObjectives
+        {
+            get
+            {
+                var list = new List<ILevelObjectiveData>(_levelObjectives.Count);
+                foreach (var obj in _levelObjectives)
+                {
+                    list.Add(obj); 
+                }
+                return list;
+            }
+        }
         public int LevelRewardCoin => _levelRewardCoin;
         public IVector2Int GridSize => new Vector2IntAdapter(_gridSize.ToDataVector2Int());
+        
+
     }
 }

@@ -1,6 +1,10 @@
 ﻿using Cysharp.Threading.Tasks;
 using Interfaces;
 using System;
+using EventBus;
+using EventBus.Events;
+using Interfaces.Controllers;
+using Miscs;
 
 namespace StateMachines.States
 {
@@ -32,6 +36,7 @@ namespace StateMachines.States
             AddEventBindings();
             _logger.Log("StartingState.Enter");
             _gridController.CreateGrid();
+            EventBus<ShowWindowEvent, UniTask>.Raise(new ShowWindowEvent(WindowType.GameplayWindow, null));
             await UniTask.Delay(_initialWaitDuration);
             await ChangeState.Invoke(typeof(InputState), null);
         }

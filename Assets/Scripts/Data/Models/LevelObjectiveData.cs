@@ -1,12 +1,23 @@
 ﻿using System;
+using Interfaces;
 using Miscs;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Data.Models
 {
     [Serializable]
-    public class LevelObjectiveData
+    public struct LevelObjectiveData : ILevelObjectiveData
     {
-        public GameElementType ObjectiveType;
-        public int ObjectiveCount;
+        [SerializeField] private GameElementType _objectiveType;
+        [SerializeField] private int _objectiveAmount;
+
+        public GameElementType ObjectiveType => _objectiveType;
+
+        public int ObjectiveAmount
+        {
+            get => _objectiveAmount;
+            set => _objectiveAmount = value;
+        }
     }
 }
