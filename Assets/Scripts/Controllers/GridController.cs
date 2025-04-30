@@ -12,7 +12,7 @@ using Miscs;
 
 namespace Controllers
 {
-    public class GridController
+    public class GridController : IGridController
     {
         private readonly IGridData _gridData;
         private readonly IObjectFactory _objectFactory;
@@ -21,14 +21,32 @@ namespace Controllers
         private readonly ILogger _logger;
 
         public ITile[,] Tiles { get; private set; }
-        public Dictionary<Vector2Int, ITile> TilesDict { get; private set; }
+        public Dictionary<IVector2Int, ITile> TilesDict { get; set; }
 
         private readonly Dictionary<TileDirectionType, IVector2Int> _tileDirectionCoordinates = new()
         {
             { TileDirectionType.Up, new Vector2Int(0, 1) },
+            { TileDirectionType.RightUp, new Vector2Int(1, 1) },
             { TileDirectionType.Right, new Vector2Int(1, 0) },
+            { TileDirectionType.RightDown, new Vector2Int(1, -1) },
             { TileDirectionType.Down, new Vector2Int(0, -1) },
+            { TileDirectionType.LeftDown, new Vector2Int(-1, -1) },
+            { TileDirectionType.LeftUp, new Vector2Int(-1, 1) },
             { TileDirectionType.Left, new Vector2Int(-1, 0) }
+        };
+
+        private readonly Dictionary<TileDirectionType, IVector2Int> _tileAboveDirectionCoordinates = new()
+        {
+            { TileDirectionType.Up, new Vector2Int(0, 1) },
+            { TileDirectionType.RightUp, new Vector2Int(1, 1) },
+            { TileDirectionType.LeftUp, new Vector2Int(-1, 1) },
+        };
+
+        private readonly Dictionary<TileDirectionType, IVector2Int> _tileBelowDirectionCoordinates = new()
+        {
+            { TileDirectionType.Down, new Vector2Int(0, -1) },
+            { TileDirectionType.RightDown, new Vector2Int(1, -1) },
+            { TileDirectionType.LeftDown, new Vector2Int(-1, -1) },
         };
 
         public GridController(IGridData gridData, IObjectFactory objectFactory, ILevelData currentLevelData, ITransform parentTransform, ILogger logger)
@@ -40,7 +58,7 @@ namespace Controllers
             _logger = logger;
 
             Tiles = new ITile[_currentLevelData.GridSize.x, _currentLevelData.GridSize.y];
-            TilesDict = new Dictionary<Vector2Int, ITile>();
+            TilesDict = new Dictionary<IVector2Int, ITile>();
         }
 
         public async void CreateGrid()
@@ -71,23 +89,31 @@ namespace Controllers
             CalculateTileNeighbours();
         }
 
-        private void CalculateTileNeighbours()
+        public void CalculateTileNeighbours()
         {
-            var neighbours = new Dictionary<TileDirectionType, ITile>();
-            var directionCount = System.Enum.GetValues(typeof(TileDirectionType)).Length;
-
             foreach (var tile in TilesDict.Values)
             {
-                neighbours = new Dictionary<TileDirectionType, ITile>();
-                for (int i = 0; i < directionCount; i++)
+                var neighbours = new Dictionary<TileDirectionType, ITile>();
+                var aboveNeighbours = new Dictionary<TileDirectionType, ITile>();
+                var belowNeighbours = new Dictionary<TileDirectionType, ITile>();
+
+                foreach (var direction in _tileDirectionCoordinates)
                 {
-                    var direction = (TileDirectionType)i;
-                    var possibleNeighbourCoordinates = tile.Coordinates.Add(_tileDirectionCoordinates[direction]);
-                    if (TilesDict.TryGetValue(possibleNeighbourCoordinates, out var neighbourTile))
-                        neighbours.Add(direction, neighbourTile);
+                    var neighbourCoords = tile.Coordinates.Add(direction.Value);
+                    if (TilesDict.TryGetValue(neighbourCoords, out var neighbourTile))
+                    {
+                        neighbours.Add(direction.Key, neighbourTile);
+
+                        if (_tileAboveDirectionCoordinates.ContainsKey(direction.Key))
+                            aboveNeighbours.Add(direction.Key, neighbourTile);
+                        else if (_tileBelowDirectionCoordinates.ContainsKey(direction.Key))
+                            belowNeighbours.Add(direction.Key, neighbourTile);
+                    }
                 }
 
-                tile.SetNeighbours(neighbours);
+                tile.Neighbours = neighbours;
+                tile.AboveNeighbours = aboveNeighbours;
+                tile.BelowNeighbours = belowNeighbours;
             }
         }
     }

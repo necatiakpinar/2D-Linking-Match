@@ -1,4 +1,5 @@
-﻿using Miscs;
+﻿using Cysharp.Threading.Tasks;
+using Miscs;
 
 namespace Interfaces
 {
@@ -6,5 +7,12 @@ namespace Interfaces
     {
         GameElementType ElementType { get; }
         ITransform Transform { get; }
+        UniTask SetTile(ITile newTile);
+        UniTask TryToActivate();
+        UniTask Activate();
+        UniTask Select();
+        UniTask Deselect();
+        UniTask PlayDestroy();
+        public void EnableSpriteRenderer();
     }
 }

@@ -22,9 +22,13 @@
     public enum TileDirectionType
     {
         Up,
+        RightUp,
         Right,
+        RightDown,
         Down,
+        LeftDown,
         Left,
+        LeftUp
     }
 
     public enum CurrencyType

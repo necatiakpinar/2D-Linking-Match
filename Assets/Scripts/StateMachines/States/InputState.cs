@@ -1,0 +1,146 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
+using EventBus;
+using EventBus.Events;
+using Interfaces;
+using StateMachines.StateParameters;
+using ILogger = Interfaces.ILogger;
+
+namespace StateMachines.States
+{
+    public class InputState : IState
+    {
+        private LinkedList<ITile> _selectedTiles = new LinkedList<ITile>();
+        private ITile _latestAddedTile;
+        private readonly ILogger _logger;
+
+        public Func<Type, IStateParameters, UniTask> ChangeState { get; set; }
+
+        private EventBinding<TilePressedEvent> _tilePressedEventBinding;
+        private EventBinding<TileReleasedEvent> _tileReleasedEventBinding;
+        private EventBinding<HasAnyTileSelected, bool> _hasAnyTileSelectedEventBinding;
+        private EventBinding<TryToAddTileEvent> _tryToAddTileEventBinding;
+
+        private readonly int _minTilesToCreateMatch = 3;
+        public InputState(ILogger logger)
+        {
+            _logger = logger;
+        }
+
+        public void AddEventBindings()
+        {
+            _tilePressedEventBinding = new EventBinding<TilePressedEvent>(OnTilePressed);
+            EventBus<TilePressedEvent>.Register(_tilePressedEventBinding);
+
+            _tileReleasedEventBinding = new EventBinding<TileReleasedEvent>(OnTileReleased);
+            EventBus<TileReleasedEvent>.Register(_tileReleasedEventBinding);
+
+            _hasAnyTileSelectedEventBinding = new EventBinding<HasAnyTileSelected, bool>(OnHasAnyTileSelected);
+            EventBus<HasAnyTileSelected, bool>.Register(_hasAnyTileSelectedEventBinding);
+
+            _tryToAddTileEventBinding = new EventBinding<TryToAddTileEvent>(OnTryToAddTile);
+            EventBus<TryToAddTileEvent>.Register(_tryToAddTileEventBinding);
+        }
+
+        public void RemoveEventBindings()
+        {
+            EventBus<TilePressedEvent>.Deregister(_tilePressedEventBinding);
+            EventBus<TileReleasedEvent>.Deregister(_tileReleasedEventBinding);
+            EventBus<HasAnyTileSelected, bool>.Deregister(_hasAnyTileSelectedEventBinding);
+            EventBus<TryToAddTileEvent>.Deregister(_tryToAddTileEventBinding);
+        }
+
+        public async UniTask Enter(IStateParameters parameters = null)
+        {
+            _logger.LogError("InputState.Enter");
+            AddEventBindings();
+            _latestAddedTile = null;
+            _selectedTiles.Clear();
+        }
+
+        private async void OnTilePressed(TilePressedEvent @event)
+        {
+            if (@event.FirstAddedTile == null || @event.FirstAddedTile.TileElement == null)
+                return;
+
+            _latestAddedTile = @event.FirstAddedTile;
+            await _latestAddedTile.SelectTile();
+            _selectedTiles = new LinkedList<ITile>();
+            _selectedTiles.AddLast(_latestAddedTile);
+        }
+
+        private async void OnTileReleased(TileReleasedEvent @event)
+        {
+            if (_selectedTiles.Count >= _minTilesToCreateMatch)
+            {
+                var decisionStateParameters = new DecisionStateParameters(_selectedTiles);
+                await ChangeState.Invoke(typeof(DecisionState), decisionStateParameters);
+            }
+            else
+                await DeselectTiles();
+            
+        }
+        private async UniTask DeselectTiles()
+        {
+            var selectedTileNode = _selectedTiles.First;
+            while (selectedTileNode != null)
+            {
+                var tile = selectedTileNode.Value;
+                if (tile == null)
+                    _logger.LogError("Tile is null.");
+                else
+                    await tile.DeselectTile();
+
+                selectedTileNode = selectedTileNode.Next;
+            }
+
+            await UniTask.CompletedTask;
+        }
+
+        private void OnTryToAddTile(TryToAddTileEvent @event)
+        {
+            if (_latestAddedTile == null || _latestAddedTile.TileElement == null || @event.PossibleMatchTile.TileElement == null)
+                return;
+
+            if (_latestAddedTile.TileElement.ElementType != @event.PossibleMatchTile.TileElement.ElementType)
+                return;
+
+            if (_selectedTiles.Contains(@event.PossibleMatchTile))
+            {
+                var possibleMatchTileNode = _selectedTiles.Find(@event.PossibleMatchTile);
+                if (possibleMatchTileNode != null && possibleMatchTileNode.Next != null && possibleMatchTileNode.Next.Value == _latestAddedTile)
+                {
+                    _latestAddedTile.DeselectTile();
+                    _selectedTiles.RemoveLast();
+                    _latestAddedTile = possibleMatchTileNode.Value;
+                }
+
+                return;
+            }
+
+            if (!_latestAddedTile.HasTileInNeighbours(@event.PossibleMatchTile))
+                return;
+
+            _latestAddedTile = @event.PossibleMatchTile;
+            _latestAddedTile.SelectTile();
+            _selectedTiles.AddLast(_latestAddedTile);
+        }
+
+        private bool OnHasAnyTileSelected(HasAnyTileSelected @event)
+        {
+            return _selectedTiles.Count > 0;
+        }
+
+        public async UniTask Exit()
+        {
+            RemoveEventBindings();
+            await UniTask.CompletedTask;
+        }
+
+        public void Update()
+        {
+        }
+    }
+}
