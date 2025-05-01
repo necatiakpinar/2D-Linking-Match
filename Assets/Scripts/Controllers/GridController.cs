@@ -11,6 +11,8 @@ using Extensions;
 using Interfaces;
 using Interfaces.Controllers;
 using Miscs;
+using Unity.Mathematics;
+using Quaternion = System.Numerics.Quaternion;
 
 namespace Controllers
 {
@@ -108,7 +110,7 @@ namespace Controllers
             var spawnParameters = new SpawnGameplayElementPoolEvent(tileElementModel,
                 tile,
                 new Vector3Adapter(Vector3.zero),
-                UnityEngine.Quaternion.identity, //todo: convert this IQuaternion
+                new QuaternionAdapter(UnityEngine.Quaternion.identity.ToDataQuaternion()),
                 tile.Transform);
             var spawnedTileElement = await EventBus<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>.Raise(spawnParameters)[0];
             return spawnedTileElement;

@@ -153,7 +153,7 @@ namespace Abstracts
                 var spawnParameters = new SpawnGameplayElementPoolEvent(tileElementModel,
                     this,
                     new Vector3Adapter(Vector3.zero.ToDataVector3()),
-                    UnityEngine.Quaternion.identity, //todo: convert this IQuaternion
+                    new QuaternionAdapter(Quaternion.identity.ToDataQuaternion()),
                     Transform);
                 var spawnedTileElement = await EventBus<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>.Raise(spawnParameters)[0];
 

@@ -7,13 +7,13 @@ namespace EventBus.Events
 {
     public struct SpawnGameplayElementPoolEvent : IEvent
     {
-        public ElementModel ElementModel;
-        public ITile Tile;
-        public IVector3 Position;
-        public Quaternion Rotation;
-        public ITransform Parent;
+        public readonly ElementModel ElementModel;
+        public readonly ITile Tile;
+        public readonly IVector3 Position;
+        public readonly IQuaternion Rotation;
+        public readonly ITransform Parent;
         
-        public SpawnGameplayElementPoolEvent(ElementModel elementModel, ITile tile, IVector3 position, Quaternion rotation = default, ITransform parent = null)
+        public SpawnGameplayElementPoolEvent(ElementModel elementModel, ITile tile, IVector3 position, IQuaternion rotation = default, ITransform parent = null)
         {
             ElementModel = elementModel;
             Tile = tile;
@@ -25,8 +25,8 @@ namespace EventBus.Events
     
     public struct ReturnToPoolEvent<T> : IEvent where T : MonoBehaviour
     {
-        public GameElementType ElementType;
-        public T MonoBehaviour;
+        public readonly GameElementType ElementType;
+        public readonly T MonoBehaviour;
         
         public ReturnToPoolEvent(GameElementType elementType, T monoBehaviour)
         {

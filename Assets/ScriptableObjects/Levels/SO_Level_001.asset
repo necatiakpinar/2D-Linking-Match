@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SO_Level_001
   m_EditorClassIdentifier: 
   _levelIndex: 1
-  _moveAmount: 20
+  _moveAmount: 1
   _levelType: 0
   _levelObjectives:
   - _objectiveType: 51231

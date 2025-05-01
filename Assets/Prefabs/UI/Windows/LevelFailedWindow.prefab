@@ -220,7 +220,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4466019774135689990}
-  - component: {fileID: 4466019774135689985}
+  - component: {fileID: 1137034900833047423}
   m_Layer: 5
   m_Name: LevelFailedWindow
   m_TagString: Untagged
@@ -251,7 +251,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &4466019774135689985
+--- !u!114 &1137034900833047423
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -260,13 +260,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 4466019774135689991}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d89219a493514824bd82259735ff9cdf, type: 3}
+  m_Script: {fileID: 11500000, guid: 9f8db9afcd6d4b8b99e58ce5f9635737, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _windowType: 30
   _isCached: 0
-  _levelCompletedLabel: {fileID: 2294860577493229233}
-  _nextLevelButton: {fileID: 4466019774646639706}
+  _levelFailedLabel: {fileID: 2294860577493229233}
+  _restartLevelButton: {fileID: 4466019774646639706}
 --- !u!1001 &1349805683156885262
 PrefabInstance:
   m_ObjectHideFlags: 0
