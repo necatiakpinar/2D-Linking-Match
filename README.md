@@ -5,7 +5,7 @@
 ## English
 
 ### Project Overview
-Linking Match 2D is a Unity-based game project that implements a modern, scalable architecture using various design patterns and best practices. The project is structured to be maintainable, extensible, and follows clean code principles.
+Linking Match 2D is a Unity-based game project that implements a modern, scalable architecture using various design patterns and best practices. The project is structured to be maintainable, extensible, and follows clean code principles. It uses Universal Render Pipeline (URP) for high-quality 2D rendering and visual effects.
 
 ### Key Features
 - **Modern Architecture**: Utilizes SOLID principles and design patterns
@@ -16,6 +16,18 @@ Linking Match 2D is a Unity-based game project that implements a modern, scalabl
 - **Object Pooling**: Efficient memory management for game objects
 - **Factory Pattern**: For object creation and management
 - **Logging System**: Custom logging implementation for debugging
+- **2D Gameplay**: Optimized for 2D game mechanics and performance
+- **Visual Effects**: Enhanced particle systems and animations
+- **Audio Management**: Comprehensive sound system implementation
+- **Save System**: Persistent data management for game progress
+
+### Technical Details
+- **Rendering**: URP-based 2D rendering with post-processing effects
+- **Physics**: 2D physics system with optimized collision detection
+- **Animation**: Smooth animations using DOTween and Unity's animation system
+- **Performance**: Optimized for mobile and desktop platforms
+- **Memory Management**: Efficient object pooling and resource handling
+- **Input System**: Cross-platform input handling
 
 ### Project Structure
 ```
@@ -47,17 +59,12 @@ Assets/
 ```
 
 ### Dependencies
-- Unity 2022.3 or later
+- Unity 2021.3.22 or later
+- Universal Render Pipeline (URP)
 - TextMeshPro
 - UniTask
 - DOTween
 - Addressables
-
-### Getting Started
-1. Clone the repository
-2. Open the project in Unity 2022.3 or later
-3. Import required packages (TextMeshPro, UniTask, DOTween)
-4. Open the main scene from Assets/Scenes
 
 ### Development Guidelines
 - Follow SOLID principles
@@ -65,11 +72,69 @@ Assets/
 - Write clean, documented code
 - Use the event system for communication between components
 - Implement proper error handling and logging
+- Maintain consistent coding style
+- Document all public APIs
+- Write unit tests for critical components
+- Optimize for performance and memory usage
+
+### Linking Logic
+The game implements a sophisticated state machine system to manage the core matching mechanics:
+
+#### State Machine Flow
+1. **Input State**
+   - Handles player input and tile selection
+   - Manages tile selection chain creation
+   - Validates tile connections (neighbors only)
+   - Requires minimum 3 tiles for a valid match
+   - Transitions to Decision State when a valid chain is created
+
+2. **Decision State**
+   - Processes the selected tile chain
+   - Activates matched tiles
+   - Tracks move count
+   - Transitions to Refill State after processing
+
+3. **Refill State**
+   - Manages tile refill mechanics
+   - Handles tile dropping from above
+   - Spawns new tiles for empty spaces
+   - Returns to Input State after refill
+
+#### Tile System
+- **BaseTileMono**: Core tile implementation
+  - Manages tile connections and neighbors
+  - Handles tile selection/deselection
+  - Controls tile element spawning and dropping
+  - Implements pointer events for user interaction
+
+#### Key Features
+- **Chain Validation**: Ensures only adjacent tiles can be connected
+- **Tile Refill**: Automatic refill system with gravity simulation
+- **Spawner Tiles**: Special tiles that generate new elements
+- **Element Types**: Different tile elements with unique properties
+- **Move Tracking**: Keeps count of player moves
+
+### Editor Tools
+The project includes custom editor tools for development and testing:
+
+#### Linking Game Editor
+- **Level Management**
+  - Reset current level progress
+  - Set specific level index
+  - Clear all saved data
+- **Currency Management**
+  - Increase coin amount
+  - Decrease coin amount
+  - Reset coin balance
+- **Development Features**
+  - Quick access through Unity's Tools menu
+  - Real-time data modification
+  - Persistent data management
 
 ## Türkçe
 
 ### Proje Genel Bakış
-Linking Match 2D, çeşitli tasarım desenleri ve en iyi uygulamaları kullanarak modern, ölçeklenebilir bir mimari uygulayan Unity tabanlı bir oyun projesidir. Proje, bakımı kolay, genişletilebilir ve temiz kod prensiplerini takip edecek şekilde yapılandırılmıştır.
+Linking Match 2D, çeşitli tasarım desenleri ve en iyi uygulamaları kullanarak modern, ölçeklenebilir bir mimari uygulayan Unity tabanlı bir oyun projesidir. Proje, bakımı kolay, genişletilebilir ve temiz kod prensiplerini takip edecek şekilde yapılandırılmıştır. Yüksek kaliteli 2D render ve görsel efektler için Universal Render Pipeline (URP) kullanmaktadır.
 
 ### Temel Özellikler
 - **Modern Mimari**: SOLID prensipleri ve tasarım desenleri kullanır
@@ -80,6 +145,18 @@ Linking Match 2D, çeşitli tasarım desenleri ve en iyi uygulamaları kullanara
 - **Nesne Havuzlama**: Oyun nesneleri için verimli bellek yönetimi
 - **Fabrika Deseni**: Nesne oluşturma ve yönetimi için
 - **Loglama Sistemi**: Hata ayıklama için özel loglama uygulaması
+- **2D Oynanış**: 2D oyun mekanikleri ve performans için optimize edilmiş
+- **Görsel Efektler**: Gelişmiş parçacık sistemleri ve animasyonlar
+- **Ses Yönetimi**: Kapsamlı ses sistemi uygulaması
+- **Kayıt Sistemi**: Oyun ilerlemesi için kalıcı veri yönetimi
+
+### Teknik Detaylar
+- **Render**: Post-processing efektleri ile URP tabanlı 2D render
+- **Fizik**: Optimize edilmiş çarpışma algılama ile 2D fizik sistemi
+- **Animasyon**: DOTween ve Unity'nin animasyon sistemi ile akıcı animasyonlar
+- **Performans**: Mobil ve masaüstü platformlar için optimize edilmiş
+- **Bellek Yönetimi**: Verimli nesne havuzlama ve kaynak yönetimi
+- **Girdi Sistemi**: Platformlar arası girdi yönetimi
 
 ### Proje Yapısı
 ```
@@ -111,21 +188,74 @@ Assets/
 ```
 
 ### Bağımlılıklar
-- Unity 2022.3 veya üzeri
+- Unity 2021.3.22 veya üzeri
+- Universal Render Pipeline (URP)
 - TextMeshPro
 - UniTask
 - DOTween
 - Addressables
-
-### Başlangıç
-1. Depoyu klonlayın
-2. Projeyi Unity 2022.3 veya üzeri sürümde açın
-3. Gerekli paketleri içe aktarın (TextMeshPro, UniTask, DOTween)
-4. Ana sahneyi Assets/Scenes klasöründen açın
 
 ### Geliştirme Kuralları
 - SOLID prensiplerini takip edin
 - Mevcut mimari desenleri kullanın
 - Temiz, dokümante edilmiş kod yazın
 - Bileşenler arası iletişim için olay sistemini kullanın
-- Uygun hata yönetimi ve loglama uygulayın 
+- Uygun hata yönetimi ve loglama uygulayın
+- Tutarlı kodlama stilini koruyun
+- Tüm public API'leri dokümante edin
+- Kritik bileşenler için unit test yazın
+- Performans ve bellek kullanımı için optimize edin
+
+### Eşleştirme Mantığı
+Oyun, temel eşleştirme mekaniklerini yönetmek için gelişmiş bir durum makinesi sistemi kullanır:
+
+#### Durum Makinesi Akışı
+1. **Girdi Durumu (Input State)**
+   - Oyuncu girdisini ve karo seçimini yönetir
+   - Karo seçim zincirinin oluşturulmasını sağlar
+   - Karo bağlantılarını doğrular (sadece komşular)
+   - Geçerli bir eşleşme için minimum 3 karo gerektirir
+   - Geçerli bir zincir oluşturulduğunda Karar Durumuna geçiş yapar
+
+2. **Karar Durumu (Decision State)**
+   - Seçilen karo zincirini işler
+   - Eşleşen karoları aktifleştirir
+   - Hamle sayısını takip eder
+   - İşlem sonrası Doldurma Durumuna geçiş yapar
+
+3. **Doldurma Durumu (Refill State)**
+   - Karo doldurma mekaniklerini yönetir
+   - Üstten karo düşürme işlemlerini kontrol eder
+   - Boş alanlar için yeni karolar oluşturur
+   - Doldurma sonrası Girdi Durumuna döner
+
+#### Karo Sistemi
+- **BaseTileMono**: Temel karo uygulaması
+  - Karo bağlantılarını ve komşularını yönetir
+  - Karo seçimi/seçim kaldırmayı kontrol eder
+  - Karo elemanı oluşturma ve düşürme işlemlerini yönetir
+  - Kullanıcı etkileşimi için pointer olaylarını uygular
+
+#### Temel Özellikler
+- **Zincir Doğrulama**: Sadece bitişik karoların bağlanabilmesini sağlar
+- **Karo Doldurma**: Yerçekimi simülasyonlu otomatik doldurma sistemi
+- **Oluşturucu Karolar**: Yeni elemanlar üreten özel karolar
+- **Eleman Tipleri**: Benzersiz özelliklere sahip farklı karo elemanları
+- **Hamle Takibi**: Oyuncu hamlelerinin sayısını tutar
+
+### Editör Araçları
+Proje, geliştirme ve test için özel editör araçları içerir:
+
+#### Linking Game Editörü
+- **Seviye Yönetimi**
+  - Mevcut seviye ilerlemesini sıfırlama
+  - Belirli seviye indeksini ayarlama
+  - Tüm kayıtlı verileri temizleme
+- **Para Birimi Yönetimi**
+  - Jeton miktarını artırma
+  - Jeton miktarını azaltma
+  - Jeton bakiyesini sıfırlama
+- **Geliştirme Özellikleri**
+  - Unity'nin Araçlar menüsünden hızlı erişim
+  - Gerçek zamanlı veri değişikliği
+  - Kalıcı veri yönetimi 
