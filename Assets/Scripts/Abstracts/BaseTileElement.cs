@@ -21,7 +21,6 @@ namespace Abstracts
 
         public async void OnSpawn()
         {
-            await Deselect();
         }
 
         public async virtual UniTask Init(ElementModel pElementModel, ITile tileMono)

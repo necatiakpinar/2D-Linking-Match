@@ -19,10 +19,10 @@ namespace StateMachines.States
         private EventBinding<TryToAddTileEvent> _tryToAddTileEventBinding;
 
         public Func<Type, IStateParameters, UniTask> ChangeState { get; set; }
-        
+
         private readonly ILogger _logger;
         private readonly int _minTilesToCreateMatch = 3;
-        
+
         public InputState(ILogger logger)
         {
             _logger = logger;
@@ -54,6 +54,13 @@ namespace StateMachines.States
         public async UniTask Enter(IStateParameters parameters = null)
         {
             _logger.Log("InputState.Enter");
+            var isLevelEnded = await CheckForLevelEnded();
+            if (isLevelEnded)
+            {
+                await ChangeState.Invoke(typeof(LevelEndState), null);
+                return;
+            }
+
             await CheckForAnyLinkAvailable();
             AddEventBindings();
             _latestAddedTile = null;
@@ -65,7 +72,13 @@ namespace StateMachines.States
             await EventBus<TryToCheckAnyLinkExistEvent, UniTask>.Raise(new TryToCheckAnyLinkExistEvent())[0];
             await UniTask.CompletedTask;
         }
-        
+
+        private async UniTask<bool> CheckForLevelEnded()
+        {
+            var levelFinished = await EventBus<CheckForLevelEndedEvent, UniTask<bool>>.Raise(new CheckForLevelEndedEvent())[0];
+            return levelFinished;
+        }
+
         private async void OnTilePressed(TilePressedEvent @event)
         {
             if (@event.FirstAddedTile == null || @event.FirstAddedTile.TileElement == null)
@@ -86,7 +99,10 @@ namespace StateMachines.States
             }
             else
                 await DeselectTiles();
-            
+
+            _selectedTiles.Clear();
+            _latestAddedTile = null;
+
         }
         private async UniTask DeselectTiles()
         {

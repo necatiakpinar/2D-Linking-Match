@@ -14,8 +14,13 @@ namespace EventBus.Events
             Amount = amount;
         }
     }
+    
+    public struct CheckForLevelEndedEvent : IEvent
+    {
+        
+    }
 
-    public struct GetCurrentLevelData : IEvent
+    public struct GetCurrentLevelDataEvent : IEvent
     {
         
     }
@@ -35,5 +40,15 @@ namespace EventBus.Events
     public struct MoveUsedEvent : IEvent
     {
 
+    }
+    
+    public struct MoveUsedUIEvent : IEvent
+    {
+        public int RemainingMoves;
+
+        public MoveUsedUIEvent(int remainingMoves)
+        {
+            RemainingMoves = remainingMoves;
+        }
     }
 }

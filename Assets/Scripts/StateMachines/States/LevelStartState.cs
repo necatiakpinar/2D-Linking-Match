@@ -26,6 +26,7 @@ namespace StateMachines.States
         {
 
         }
+        
         public void RemoveEventBindings()
         {
 
@@ -37,6 +38,7 @@ namespace StateMachines.States
             _logger.Log("StartingState.Enter");
             _gridController.CreateGrid();
             EventBus<ShowWindowEvent, UniTask>.Raise(new ShowWindowEvent(WindowType.GameplayWindow, null));
+            EventBus<LevelStartedEvent>.Raise(new LevelStartedEvent());
             await UniTask.Delay(_initialWaitDuration);
             await ChangeState.Invoke(typeof(InputState), null);
         }

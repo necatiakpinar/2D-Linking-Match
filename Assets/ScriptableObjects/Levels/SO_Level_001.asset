@@ -17,8 +17,8 @@ MonoBehaviour:
   _levelType: 0
   _levelObjectives:
   - _objectiveType: 51231
-    _objectiveAmount: 20
+    _objectiveAmount: 15
   - _objectiveType: 89925
-    _objectiveAmount: 40
+    _objectiveAmount: 15
   _levelRewardCoin: 100
-  _gridSize: {x: 6, y: 6}
+  _gridSize: {x: 6, y: 5}

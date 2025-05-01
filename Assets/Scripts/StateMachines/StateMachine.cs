@@ -25,11 +25,11 @@ namespace StateMachines
             var type = state.GetType();
             if (_states.ContainsKey(type))
             {
-                _logger.LogWarning($"{type.Name} already added to StateMachine.");
+                _logger.LogError($"{type.Name} already added to StateMachine.");
                 return;
             }
 
-            _logger.LogError(type);
+            _logger.Log(type);
             state.ChangeState = ChangeStateInternal;
             _states.Add(type, state);
         }
@@ -43,7 +43,7 @@ namespace StateMachines
         {
             if (!_states.TryGetValue(targetType, out var newState))
             {
-                _logger.LogError($"State {targetType.Name} not registered.");
+                _logger.Log($"State {targetType.Name} not registered.");
                 return;
             }
 

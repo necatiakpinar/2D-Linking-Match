@@ -54,6 +54,8 @@
 
     public enum WindowType
     {
-        GameplayWindow = 10
+        GameplayWindow = 10,
+        LevelCompletedWindow = 20,
+        LevelFailedWindow = 30
     }
 }

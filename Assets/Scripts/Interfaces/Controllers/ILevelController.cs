@@ -1,5 +1,5 @@
-﻿using EventBus.Events;
-using Miscs;
+﻿using Cysharp.Threading.Tasks;
+using EventBus.Events;
 
 namespace Interfaces.Controllers
 {
@@ -13,6 +13,7 @@ namespace Interfaces.Controllers
         void LoadGameplayLevel();
         void UpdateLevelObjective(UpdateLevelObjectiveEvent @event);
         void MoveUsed(MoveUsedEvent @event);
-        ILevelData GetCurrentLevelData(GetCurrentLevelData @event);
+        ILevelData GetCurrentLevelData(GetCurrentLevelDataEvent @event);
+        UniTask<bool> CheckForLevelEnded(CheckForLevelEndedEvent @event);
     }
 }

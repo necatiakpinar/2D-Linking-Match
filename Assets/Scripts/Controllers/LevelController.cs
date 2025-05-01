@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Data.PersistentData;
 using EventBus;
 using EventBus.Events;
 using Interfaces;
 using Interfaces.Controllers;
+using Miscs;
+using UI.WindowParameters;
 
 namespace Controllers
 {
@@ -15,10 +18,12 @@ namespace Controllers
         private int _currentLevelIndex;
         private List<ILevelObjectiveData> _levelObjectives;
         private int _currentMoveAmount;
+        private bool _levelFinished;
         private EventBinding<UpdateLevelObjectiveEvent> _updateLevelObjectiveEvent;
-        private EventBinding<MoveUsedEvent> _moveUsedEvent; 
-        private EventBinding<GetCurrentLevelData, ILevelData> _getCurrentLevelDataEvent;
-        
+        private EventBinding<MoveUsedEvent> _moveUsedEvent;
+        private EventBinding<GetCurrentLevelDataEvent, ILevelData> _getCurrentLevelDataEvent;
+        private EventBinding<CheckForLevelEndedEvent, UniTask<bool>> _checkForLevelFinishedEvent;
+
         public int CurrentLevelIndex => _currentLevelIndex;
         public ILevelData CurrentLevelData => _currentLevelData;
 
@@ -29,16 +34,20 @@ namespace Controllers
 
             _moveUsedEvent = new EventBinding<MoveUsedEvent>(MoveUsed);
             EventBus<MoveUsedEvent>.Register(_moveUsedEvent);
-            
-            _getCurrentLevelDataEvent = new EventBinding<GetCurrentLevelData, ILevelData>(GetCurrentLevelData);
-            EventBus<GetCurrentLevelData, ILevelData>.Register(_getCurrentLevelDataEvent);
+
+            _getCurrentLevelDataEvent = new EventBinding<GetCurrentLevelDataEvent, ILevelData>(GetCurrentLevelData);
+            EventBus<GetCurrentLevelDataEvent, ILevelData>.Register(_getCurrentLevelDataEvent);
+
+            _checkForLevelFinishedEvent = new EventBinding<CheckForLevelEndedEvent, UniTask<bool>>(CheckForLevelEnded);
+            EventBus<CheckForLevelEndedEvent, UniTask<bool>>.Register(_checkForLevelFinishedEvent);
         }
 
         public void RemoveEventListeners()
         {
             EventBus<UpdateLevelObjectiveEvent>.Deregister(_updateLevelObjectiveEvent);
             EventBus<MoveUsedEvent>.Deregister(_moveUsedEvent);
-            EventBus<GetCurrentLevelData, ILevelData>.Deregister(_getCurrentLevelDataEvent);
+            EventBus<GetCurrentLevelDataEvent, ILevelData>.Deregister(_getCurrentLevelDataEvent);
+            EventBus<CheckForLevelEndedEvent, UniTask<bool>>.Deregister(_checkForLevelFinishedEvent);
         }
 
         public LevelController(ILevelContainer levelContainerData, ILogger logger)
@@ -67,13 +76,16 @@ namespace Controllers
             _logger.Log($"Current level index: {_currentLevelData.GridSize.x} x {_currentLevelData.GridSize.y}");
         }
 
-        public void UpdateLevelObjective(UpdateLevelObjectiveEvent @event)
+        public async void UpdateLevelObjective(UpdateLevelObjectiveEvent @event)
         {
             if (_levelObjectives == null)
             {
                 _logger.LogError("Level objectives are null");
                 return;
             }
+
+            if (_levelObjectives.Count == 0)
+                return;
 
             foreach (var objective in _levelObjectives)
             {
@@ -85,33 +97,46 @@ namespace Controllers
                         objective.ObjectiveAmount = 0;
                         _levelObjectives.Remove(objective);
                     }
-                    
+
                     var levelObjectiveUpdatedUI = new UpdateLevelObjectiveUIEvent(objective.ObjectiveType, objective.ObjectiveAmount);
                     EventBus<UpdateLevelObjectiveUIEvent>.Raise(levelObjectiveUpdatedUI);
                     break;
                 }
             }
-
-            // todo: can work multiple, careful!
-            if (_levelObjectives.Count == 0)
-            {
-                //todo: level finished!
-                _logger.LogError("level Completed!");
-            }
-            
         }
-        
+
+        public async UniTask<bool> CheckForLevelEnded(CheckForLevelEndedEvent @event)
+        {
+            if (_levelObjectives.Count == 0 && _currentMoveAmount > 0)
+            {
+                PersistentDataManager.GameplayData.LevelDataController.IncreaseCurrentLevelIndex();
+                PersistentDataManager.SaveDataToDisk();
+                var levelCompletedParameters = new LevelCompletedWindowParameters(_currentLevelData);
+                await EventBus<ShowWindowEvent, UniTask>.Raise(new ShowWindowEvent(WindowType.LevelCompletedWindow, levelCompletedParameters));
+                return true;
+            }
+
+            if (_currentMoveAmount <= 0)
+            {
+                var levelFailedParameters = new LevelFailedWindowParameters(_currentLevelData);
+                await EventBus<ShowWindowEvent, UniTask>.Raise(new ShowWindowEvent(WindowType.LevelFailedWindow, levelFailedParameters));
+                return true;
+            }
+
+            return false;
+        }
+
         public void MoveUsed(MoveUsedEvent @event)
         {
             _currentMoveAmount--;
 
             if (_currentMoveAmount <= 0)
-            {
-                //todo: Fail Level
-            }
+                _currentMoveAmount = 0;
+            
+            EventBus<MoveUsedUIEvent>.Raise(new MoveUsedUIEvent(_currentMoveAmount));
         }
-        
-        public ILevelData GetCurrentLevelData(GetCurrentLevelData @event)
+
+        public ILevelData GetCurrentLevelData(GetCurrentLevelDataEvent @event)
         {
             return _currentLevelData;
         }

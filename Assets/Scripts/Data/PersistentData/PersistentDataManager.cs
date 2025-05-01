@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Helpers;
 using Miscs;
 using UnityEngine;
 
@@ -12,29 +13,28 @@ namespace Data.PersistentData
 
         public static GameplayData GameplayData => _gameplayData;
 
-        private static readonly string FilePath =
+        private static readonly string _filePath =
             $"{Application.persistentDataPath}/{Constants.PlayerDataFileName}.{Constants.SaveFileExtensionName}";
 
         public static void SaveDataToDisk()
         {
             if (_cachedGameplayData != null && _cachedGameplayData.Equals(_gameplayData))
             {
-                Debug.Log("No changes detected. Save operation skipped.");
+                LoggerUtil.Log("No changes detected. Save operation skipped.");
                 return;
             }
 
             try
             {
-                //var jsonData = JsonConvert.SerializeObject(_gameplayData, Formatting.Indented);
                 var jsonData = JsonUtility.ToJson(_gameplayData, true);
                 var encryptedData = CryptoHelper.Encrypt(jsonData);
-                File.WriteAllText(FilePath, encryptedData);
+                File.WriteAllText(_filePath, encryptedData);
                 _cachedGameplayData = CloneGameplayData(_gameplayData);
-                Debug.Log("GameplayData successfully saved and encrypted.");
+                LoggerUtil.Log("GameplayData successfully saved and encrypted.");
             }
             catch (Exception e)
             {
-                Debug.LogError($"Failed to save GameplayData: {e.Message}");
+                LoggerUtil.LogError($"Failed to save GameplayData: {e.Message}");
             }
         }
         
@@ -42,24 +42,24 @@ namespace Data.PersistentData
         {
             try
             {
-                if (File.Exists(FilePath))
+                if (File.Exists(_filePath))
                 {
-                    var encryptedData = File.ReadAllText(FilePath);
+                    var encryptedData = File.ReadAllText(_filePath);
                     var jsonData = CryptoHelper.Decrypt(encryptedData);
                     _gameplayData = JsonUtility.FromJson<GameplayData>(jsonData);
                     _cachedGameplayData = CloneGameplayData(_gameplayData);
-                    Debug.Log("GameplayData successfully loaded and decrypted.");
+                    LoggerUtil.Log("GameplayData successfully loaded and decrypted.");
                 }
                 else
                 {
-                    Debug.Log("No existing save data found. Creating new data.");
+                    LoggerUtil.Log("No existing save data found. Creating new data.");
                     _gameplayData = new GameplayData();
                     SaveDataToDisk();
                 }
             }
             catch (Exception e)
             {
-                Debug.LogError($"Failed to load GameplayData: {e.Message}");
+                LoggerUtil.LogError($"Failed to load GameplayData: {e.Message}");
                 _gameplayData = new GameplayData();
             }
         }
