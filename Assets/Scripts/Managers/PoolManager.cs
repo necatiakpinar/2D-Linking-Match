@@ -38,7 +38,6 @@ namespace Managers
                 spawnGameplayElementPoolEvent.Rotation,
                 spawnGameplayElementPoolEvent.Parent);
             await spawnedElement.Init(spawnGameplayElementPoolEvent.ElementModel, spawnGameplayElementPoolEvent.Tile);
-            EventBus<AddTileElementEvent>.Raise(new AddTileElementEvent(spawnedElement));
             return spawnedElement;
         }
 
@@ -46,7 +45,6 @@ namespace Managers
         {
             returnToPoolEvent.MonoBehaviour.gameObject.SetActive(false);
             _playableElementPool.ReturnToPool(returnToPoolEvent.ElementType, returnToPoolEvent.MonoBehaviour);
-            EventBus<RemoveTileElementEvent>.Raise(new RemoveTileElementEvent(returnToPoolEvent.MonoBehaviour));
         }
     }
 }
