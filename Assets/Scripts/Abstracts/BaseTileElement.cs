@@ -34,7 +34,7 @@ namespace Abstracts
 
             transform.parent = ((UnityTransform)TileMono.Transform).TransformRef;
             TileMono.SetTileElement(this);
-            await transform.DOLocalMove(Vector3.zero, 0.2f).SetEase(Ease.InOutElastic).ToUniTask();
+            transform.DOLocalMove(Vector3.zero, 0.2f).SetEase(Ease.InOutElastic);
         }
 
         public async virtual UniTask TryToActivate()
