@@ -11,8 +11,6 @@ using Extensions;
 using Interfaces;
 using Interfaces.Controllers;
 using Miscs;
-using Unity.Mathematics;
-using Quaternion = System.Numerics.Quaternion;
 
 namespace Controllers
 {

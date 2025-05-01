@@ -14,7 +14,7 @@ namespace Miscs
             using (var aes = Aes.Create())
             {
                 aes.Key = Encoding.UTF8.GetBytes(Key);
-                aes.IV = new byte[16]; // Varsayılan 16 byte IV (sıfırlarla dolu)
+                aes.IV = new byte[16];
 
                 using (var encryptor = aes.CreateEncryptor(aes.Key, aes.IV))
                 using (var ms = new MemoryStream())
@@ -34,7 +34,7 @@ namespace Miscs
             using (var aes = Aes.Create())
             {
                 aes.Key = Encoding.UTF8.GetBytes(Key);
-                aes.IV = new byte[16]; // Varsayılan 16 byte IV (sıfırlarla dolu)
+                aes.IV = new byte[16];
 
                 using (var decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
                 using (var ms = new MemoryStream(Convert.FromBase64String(cipherText)))

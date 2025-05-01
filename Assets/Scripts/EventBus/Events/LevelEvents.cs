@@ -3,6 +3,12 @@ using Miscs;
 
 namespace EventBus.Events
 {
+    
+    public struct LevelStartedEvent : IEvent
+    {
+        
+    }
+    
     public struct UpdateLevelObjectiveEvent : IEvent
     {
         public GameElementType ObjectiveType;

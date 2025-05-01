@@ -19,10 +19,6 @@ namespace Abstracts
         public GameElementType ElementType => _elementType;
         public ITransform Transform => new UnityTransform(transform);
 
-        public async void OnSpawn()
-        {
-        }
-
         public async virtual UniTask Init(ElementModel pElementModel, ITile tileMono)
         {
             ElementModel = pElementModel;

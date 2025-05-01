@@ -62,9 +62,6 @@ namespace Abstracts
             objectToSpawn.Transform.LocalPosition = position;
             objectToSpawn.Transform.Rotation = rotation;
             objectToSpawn.gameObject.SetActive(true);
-
-            objectToSpawn.OnSpawn();
-
             return objectToSpawn;
         }
 

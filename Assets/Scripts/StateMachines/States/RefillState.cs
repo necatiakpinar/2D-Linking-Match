@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using Interfaces;
 using StateMachines.StateParameters;
-using UnityEngine;
 using ILogger = Interfaces.ILogger;
 
 namespace StateMachines.States

@@ -6,7 +6,6 @@ using EventBus;
 using EventBus.Events;
 using Helpers;
 using Interfaces;
-using Miscs;
 using UnityEngine;
 using UnityEngine.U2D;
 
@@ -14,18 +13,11 @@ namespace Abstracts
 {
     public class BasePlayableTileElement : BaseTileElement, IPlayableTileElement, IPoolable<BasePlayableTileElement>
     {
-        [SerializeField] private PlayableEntitySetType _setType; // Can be removed later, since it is controlled by addressables
         private Sequence _highlightSequence;
-
-        public PlayableEntitySetType SetType => _setType;
-
-        public void OnSpawn()
-        {
-        }
-
+        
         public async override UniTask Init(ElementModel pElementModel, ITile tileMono)
         {
-            await base.Init(pElementModel,tileMono);
+            await base.Init(pElementModel, tileMono);
             EnableSpriteRenderer();
             var spriteAtlas = await AddressablesLoader.LoadAssetAsync<SpriteAtlas>(AddressablesKeys.GetKey(AddressablesKeys.AssetKeys.SA_Set1TileElements));
             if (spriteAtlas == null)
@@ -41,9 +33,7 @@ namespace Abstracts
         {
             await base.Select();
             if (_highlightSequence != null && _highlightSequence.IsActive())
-            {
                 _highlightSequence.Kill();
-            }
 
             _highlightSequence = DOTween.Sequence();
 
@@ -72,10 +62,9 @@ namespace Abstracts
         public async override UniTask Activate()
         {
             await base.Activate();
-            
             await PlayDestroy();
         }
-        
+
         public void ReturnToPool(BasePlayableTileElement poolObject)
         {
             TileMono = null;
@@ -85,8 +74,8 @@ namespace Abstracts
         public async override UniTask PlayDestroy()
         {
             await base.PlayDestroy();
-            EventBus<UpdateLevelObjectiveEvent>.Raise(new UpdateLevelObjectiveEvent(ElementType,1));
-            
+            EventBus<UpdateLevelObjectiveEvent>.Raise(new UpdateLevelObjectiveEvent(ElementType, 1));
+
             await Deselect();
             ReturnToPool(this);
             await UniTask.CompletedTask;

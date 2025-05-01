@@ -66,11 +66,7 @@ namespace Abstracts
 
         public void SetTileElement(ITileElement tileElement)
         {
-            _tileElement = tileElement;
-            if (_tileElement == null)
-                return;
-
-            //_tileElement.Transform.LocalPosition = new Vector3Adapter(Vector3.zero.ToDataVector3());
+            _tileElement = tileElement; 
         }
 
         public bool HasTileInNeighbours(ITile tile)
@@ -173,10 +169,8 @@ namespace Abstracts
                         continue;
 
                     if (aboveNeighbour.TileElement == null)
-                    {
                         await aboveNeighbour.TryToRequestTileElement();
-                    }
-
+             
                     if (aboveNeighbour.TileElement != null && aboveNeighbour.TileElement is IPlayableTileElement)
                     {
                         var result = await aboveNeighbour.TryToDropTileElement(this);
