@@ -1,6 +1,7 @@
 ﻿using Addressables;
 using Controllers;
 using Cysharp.Threading.Tasks;
+using Data.Controllers;
 using Data.PersistentData;
 using Data.ScriptableObjects;
 using Data.ScriptableObjects.Attributes;
@@ -9,6 +10,7 @@ using Factories;
 using Helpers;
 using Interfaces;
 using Loggers;
+using Miscs;
 using StateMachines.States;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -24,12 +26,16 @@ namespace Managers
         private GridDataSo _gridDataSo;
         private float _currentRemainingTime;
 
+        private SaveSystemController<GameplayData> _gameplaySaveSystemController;
+        private PersistentDataController _persistentDataController;
         private LevelController _levelController;
         private GridController _gridController;
-        private IStateMachine _stateMachine;
         private UnityLogger _logger;
         private UnityObjectFactory _objectFactory;
+        private CryptoHelper _cryptoHelper;
+        private JsonHelper _jsonHelper;
 
+        private IStateMachine _stateMachine;
         private IState _levelStartState;
         private IState _inputState;
         private IState _decisionState;
@@ -43,7 +49,12 @@ namespace Managers
 
         private void Awake()
         {
-            PersistentDataManager.LoadSaveDataFromDisk();
+            _logger = new UnityLogger();
+            _cryptoHelper = new CryptoHelper();
+            _jsonHelper = new JsonHelper();
+            _gameplaySaveSystemController = new SaveSystemController<GameplayData>(Constants.GameplayDataPath,_jsonHelper, _cryptoHelper, _logger);
+            _gameplaySaveSystemController.LoadSaveDataFromDisk();
+            _persistentDataController = new PersistentDataController((GameplayData)_gameplaySaveSystemController.PersistentData);
         }
 
         private async void Start()
@@ -54,8 +65,7 @@ namespace Managers
         private async UniTask Init()
         {
             await LoadAddressables();
-
-            _logger = new UnityLogger();
+            
             _objectFactory = new UnityObjectFactory(_logger);
             _levelController = new LevelController(_levelContainerSo, _logger);
             _gridController = new GridController(_gridDataSo, _objectFactory, _levelController.CurrentLevelData, new UnityTransform(_gridParent), _logger);
@@ -113,15 +123,21 @@ namespace Managers
         {
             if (_levelController != null)
                 _levelController.RemoveEventListeners();
-            
+
             if (_gridController != null)
                 _gridController.RemoveEventListeners();
-            
+
             if (_levelStartState != null)
                 _levelStartState.RemoveEventBindings();
 
             if (_inputState != null)
                 _inputState.RemoveEventBindings();
+
+            if (_gameplaySaveSystemController != null)
+                _gameplaySaveSystemController.RemoveEventBindings();
+
+            if (_persistentDataController != null)
+                _persistentDataController.RemoveEventBindings();
         }
     }
 }

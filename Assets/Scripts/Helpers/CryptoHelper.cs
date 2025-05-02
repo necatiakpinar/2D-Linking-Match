@@ -2,14 +2,16 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using Interfaces;
+using Miscs;
 
-namespace Miscs
+namespace Helpers
 {
-    public static class CryptoHelper
+    public class CryptoHelper : ICryptoHelper
     {
-        private static readonly string Key = KeyGenerator.GenerateDeviceKey();
+        private readonly string Key = KeyGenerator.GenerateDeviceKey();
 
-        public static string Encrypt(string plainText)
+        public string Encrypt(string plainText)
         {
             using (var aes = Aes.Create())
             {
@@ -29,7 +31,7 @@ namespace Miscs
             }
         }
 
-        public static string Decrypt(string cipherText)
+        public string Decrypt(string cipherText)
         {
             using (var aes = Aes.Create())
             {

@@ -1,4 +1,6 @@
-﻿namespace Miscs
+﻿using UnityEngine;
+
+namespace Miscs
 {
     public static class Constants
     {
@@ -10,5 +12,8 @@
         public static readonly string DefaultSortingLayer = "Default";
         public static readonly string PlayableElementSortingLayer = "PlayableElement";
         public static readonly string WorldUISortingLayer = "WorldUI";
+        
+        public static readonly string GameplayDataPath =
+            $"{Application.persistentDataPath}/{PlayerDataFileName}.{SaveFileExtensionName}";
     }
 }

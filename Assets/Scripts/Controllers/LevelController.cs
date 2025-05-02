@@ -19,6 +19,7 @@ namespace Controllers
         private List<ILevelObjectiveData> _levelObjectives;
         private int _currentMoveAmount;
         private bool _levelFinished;
+        private GameplayData _gameplayData;
         private EventBinding<UpdateLevelObjectiveEvent> _updateLevelObjectiveEvent;
         private EventBinding<MoveUsedEvent> _moveUsedEvent;
         private EventBinding<GetCurrentLevelDataEvent, ILevelData> _getCurrentLevelDataEvent;
@@ -54,18 +55,22 @@ namespace Controllers
         {
             _levelContainerData = levelContainerData;
             _logger = logger;
+            _gameplayData = EventBus<GetPersistentDataEvent, GameplayData>.Raise(new GetPersistentDataEvent())[0];
             AddEventListeners();
             LoadGameplayLevel();
         }
 
         public void LoadGameplayLevel()
         {
-            _currentLevelIndex = PersistentDataManager.GameplayData.LevelDataController.CurrentLevelIndex;
-
+            // _currentLevelIndex = PersistentDataController.GameplayData.LevelDataController.CurrentLevelIndex;
+            _currentLevelIndex = _gameplayData.LevelDataController.CurrentLevelIndex;
+            
             if (_currentLevelIndex >= _levelContainerData.Levels.Count)
             {
-                PersistentDataManager.GameplayData.LevelDataController.CurrentLevelIndex = 0;
-                PersistentDataManager.SaveDataToDisk();
+                //   PersistentDataController.GameplayData.LevelDataController.CurrentLevelIndex = 0;
+                _gameplayData.LevelDataController.CurrentLevelIndex = 0;
+                //PersistentDataController.SaveDataToDisk();
+                EventBus<SaveDataEvent>.Raise(new SaveDataEvent());
                 _currentLevelIndex = 0;
             }
 
@@ -109,8 +114,12 @@ namespace Controllers
         {
             if (_levelObjectives.Count == 0 && _currentMoveAmount > 0)
             {
-                PersistentDataManager.GameplayData.LevelDataController.IncreaseCurrentLevelIndex();
-                PersistentDataManager.SaveDataToDisk();
+                //  PersistentDataController.GameplayData.LevelDataController.IncreaseCurrentLevelIndex();
+                var gameplayData = EventBus<GetPersistentDataEvent, GameplayData>.Raise(new GetPersistentDataEvent())[0];
+                gameplayData.LevelDataController.IncreaseCurrentLevelIndex();
+
+                //PersistentDataController.SaveDataToDisk();
+                EventBus<SaveDataEvent>.Raise(new SaveDataEvent());
                 var levelCompletedParameters = new LevelCompletedWindowParameters(_currentLevelData);
                 await EventBus<ShowWindowEvent, UniTask>.Raise(new ShowWindowEvent(WindowType.LevelCompletedWindow, levelCompletedParameters));
                 return true;
@@ -132,7 +141,7 @@ namespace Controllers
 
             if (_currentMoveAmount <= 0)
                 _currentMoveAmount = 0;
-            
+
             EventBus<MoveUsedUIEvent>.Raise(new MoveUsedUIEvent(_currentMoveAmount));
         }
 
