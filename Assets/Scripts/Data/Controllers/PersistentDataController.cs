@@ -9,6 +9,7 @@ namespace Data.Controllers
         private readonly GameplayData _gameplayData;
         private EventBinding<GetPersistentDataEvent, GameplayData> _getPersistentDataBinding;
 
+        public GameplayData GameplayData => _gameplayData;
         public PersistentDataController(GameplayData gameplayData)
         {
             _gameplayData = gameplayData;

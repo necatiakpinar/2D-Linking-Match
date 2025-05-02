@@ -97,5 +97,25 @@ namespace Controllers
         {
             return _jsonHelper.FromJson(_jsonHelper.ToJson(data, false), typeof(T)) as IGameplayData;
         }
+        
+        public void ClearAllData()
+        {
+            try
+            {
+                if (File.Exists(DataFilePath))
+                {
+                    File.Delete(DataFilePath);
+                    _logger.Log("All save data cleared.");
+                }
+                else
+                {
+                    _logger.Log("No existing save data found to clear.");
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"Failed to clear save data: {e.Message}");
+            }
+        }
     }
 }

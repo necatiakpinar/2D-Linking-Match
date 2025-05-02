@@ -12,5 +12,6 @@ namespace Interfaces.Controllers
         void LoadSaveDataFromDisk();
         void AddEventBindings();
         void RemoveEventBindings();
+        void ClearAllData();
     }
 }
