@@ -18,7 +18,6 @@ Linking Match 2D is a Unity-based game project that implements a modern, scalabl
 - **Logging System**: Custom logging implementation for debugging
 - **2D Gameplay**: Optimized for 2D game mechanics and performance
 - **Visual Effects**: Enhanced particle systems and animations
-- **Audio Management**: Comprehensive sound system implementation
 - **Save System**: Persistent data management for game progress
 
 ### Technical Details
@@ -147,7 +146,6 @@ Linking Match 2D, çeşitli tasarım desenleri ve en iyi uygulamaları kullanara
 - **Loglama Sistemi**: Hata ayıklama için özel loglama uygulaması
 - **2D Oynanış**: 2D oyun mekanikleri ve performans için optimize edilmiş
 - **Görsel Efektler**: Gelişmiş parçacık sistemleri ve animasyonlar
-- **Ses Yönetimi**: Kapsamlı ses sistemi uygulaması
 - **Kayıt Sistemi**: Oyun ilerlemesi için kalıcı veri yönetimi
 
 ### Teknik Detaylar
