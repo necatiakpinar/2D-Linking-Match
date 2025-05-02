@@ -62,14 +62,11 @@ namespace Controllers
 
         public void LoadGameplayLevel()
         {
-            // _currentLevelIndex = PersistentDataController.GameplayData.LevelDataController.CurrentLevelIndex;
             _currentLevelIndex = _gameplayData.LevelDataController.CurrentLevelIndex;
             
             if (_currentLevelIndex >= _levelContainerData.Levels.Count)
             {
-                //   PersistentDataController.GameplayData.LevelDataController.CurrentLevelIndex = 0;
                 _gameplayData.LevelDataController.CurrentLevelIndex = 0;
-                //PersistentDataController.SaveDataToDisk();
                 EventBus<SaveDataEvent>.Raise(new SaveDataEvent());
                 _currentLevelIndex = 0;
             }
@@ -114,11 +111,9 @@ namespace Controllers
         {
             if (_levelObjectives.Count == 0 && _currentMoveAmount > 0)
             {
-                //  PersistentDataController.GameplayData.LevelDataController.IncreaseCurrentLevelIndex();
                 var gameplayData = EventBus<GetPersistentDataEvent, GameplayData>.Raise(new GetPersistentDataEvent())[0];
                 gameplayData.LevelDataController.IncreaseCurrentLevelIndex();
 
-                //PersistentDataController.SaveDataToDisk();
                 EventBus<SaveDataEvent>.Raise(new SaveDataEvent());
                 var levelCompletedParameters = new LevelCompletedWindowParameters(_currentLevelData);
                 await EventBus<ShowWindowEvent, UniTask>.Raise(new ShowWindowEvent(WindowType.LevelCompletedWindow, levelCompletedParameters));

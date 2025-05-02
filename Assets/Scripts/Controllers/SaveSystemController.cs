@@ -14,6 +14,7 @@ namespace Controllers
         private IGameplayData _persistentData;
         private IGameplayData _cachedPersistentData;
         private IEventBinding<SaveDataEvent> _saveDataEventBinding;
+        
         public IGameplayData PersistentData => _persistentData;
         public IGameplayData CachedPersistentData => _cachedPersistentData;
         public string DataFilePath => _gameplayFilePath;
@@ -74,7 +75,7 @@ namespace Controllers
                 {
                     var encryptedData = File.ReadAllText(DataFilePath);
                     var jsonData = _cryptoHelper.Decrypt(encryptedData);
-                    _persistentData = _jsonHelper.FromJson(jsonData, typeof(GameplayData)) as GameplayData;
+                    _persistentData = _jsonHelper.FromJson(jsonData, typeof(T)) as IGameplayData;
                     _cachedPersistentData = CloneGameplayData(_persistentData);
                     _logger.Log("GameplayData successfully loaded and decrypted.");
                 }

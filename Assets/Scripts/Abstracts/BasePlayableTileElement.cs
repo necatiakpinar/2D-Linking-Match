@@ -29,9 +29,9 @@ namespace Abstracts
             _spriteRenderer.sprite = spriteAtlas.GetSprite(ElementType.ToString());
         }
 
-        public async override UniTask Select()
+        public override void Select()
         {
-            await base.Select();
+            base.Select();
             if (_highlightSequence != null && _highlightSequence.IsActive())
                 _highlightSequence.Kill();
 
@@ -44,9 +44,9 @@ namespace Abstracts
             _highlightSequence.SetLoops(-1, LoopType.Restart);
         }
 
-        public async override UniTask Deselect()
+        public override void Deselect()
         {
-            await base.Deselect();
+            base.Deselect();
             if (_highlightSequence != null && _highlightSequence.IsActive())
                 _highlightSequence.Kill();
 
@@ -76,7 +76,7 @@ namespace Abstracts
             await base.PlayDestroy();
             EventBus<UpdateLevelObjectiveEvent>.Raise(new UpdateLevelObjectiveEvent(ElementType, 1));
 
-            await Deselect();
+            Deselect();
             ReturnToPool(this);
             await UniTask.CompletedTask;
         }

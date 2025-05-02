@@ -31,7 +31,7 @@ namespace Abstracts
             ButtonLabel = Button.GetComponentInChildren<TMP_Text>();
         }
 
-        public async UniTask Init(string buttonName, Action onClick)
+        public async void Init(string buttonName, Action onClick)
         {
             if (ButtonLabel == null)
             {
@@ -44,7 +44,6 @@ namespace Abstracts
                 ButtonLabel.text = buttonName;
 
             _onClick = onClick;
-            await UniTask.CompletedTask;
         }
 
         protected virtual void OnClick()

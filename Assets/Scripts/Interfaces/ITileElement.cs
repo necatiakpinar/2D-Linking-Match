@@ -10,8 +10,8 @@ namespace Interfaces
         UniTask SetTile(ITile newTile);
         UniTask TryToActivate();
         UniTask Activate();
-        UniTask Select();
-        UniTask Deselect();
+        void Select();
+        void Deselect();
         UniTask PlayDestroy();
         public void EnableSpriteRenderer();
     }

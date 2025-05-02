@@ -10,6 +10,5 @@ namespace Interfaces
         public Func<Type,IStateParameters, UniTask> ChangeState { get; set; }
         UniTask Enter(IStateParameters parameters = null);
         UniTask Exit();
-        void Update();
     }
 }

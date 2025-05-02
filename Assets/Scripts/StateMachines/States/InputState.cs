@@ -79,13 +79,13 @@ namespace StateMachines.States
             return levelFinished;
         }
 
-        private async void OnTilePressed(TilePressedEvent @event)
+        private void OnTilePressed(TilePressedEvent @event)
         {
             if (@event.FirstAddedTile == null || @event.FirstAddedTile.TileElement == null)
                 return;
 
             _latestAddedTile = @event.FirstAddedTile;
-            await _latestAddedTile.SelectTile();
+            _latestAddedTile.SelectTile();
             _selectedTiles = new LinkedList<ITile>();
             _selectedTiles.AddLast(_latestAddedTile);
         }
@@ -98,13 +98,13 @@ namespace StateMachines.States
                 await ChangeState.Invoke(typeof(DecisionState), decisionStateParameters);
             }
             else
-                await DeselectTiles();
+                DeselectTiles();
 
             _selectedTiles.Clear();
             _latestAddedTile = null;
 
         }
-        private async UniTask DeselectTiles()
+        private async void DeselectTiles()
         {
             var selectedTileNode = _selectedTiles.First;
             while (selectedTileNode != null)
@@ -113,7 +113,7 @@ namespace StateMachines.States
                 if (tile == null)
                     _logger.Log("Tile is null.");
                 else
-                    await tile.DeselectTile();
+                    tile.DeselectTile();
 
                 selectedTileNode = selectedTileNode.Next;
             }
@@ -159,10 +159,6 @@ namespace StateMachines.States
         {
             RemoveEventBindings();
             await UniTask.CompletedTask;
-        }
-
-        public void Update()
-        {
         }
     }
 }

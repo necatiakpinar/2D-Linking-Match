@@ -58,11 +58,7 @@ namespace StateMachines.States
 
             await UniTask.CompletedTask;
         }
-
-        public void Update()
-        {
-        }
-
+        
         public async UniTask Exit()
         {
             await UniTask.CompletedTask;

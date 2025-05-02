@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using Abstracts;
 using Adapters;
 using Cysharp.Threading.Tasks;
@@ -92,7 +91,7 @@ namespace Controllers
                     if (!isSpawner)
                         spawnedTileElement = await CreateTileElement(tile);
 
-                    await tile.Init(tileCoordinates, spawnedTileElement, isSpawner);
+                    tile.Init(tileCoordinates, spawnedTileElement, isSpawner);
 
                     Tiles[tileCoordinates.x, tileCoordinates.y] = tile;
                     TilesDict.Add(new Vector2Int(tileCoordinates.x, tileCoordinates.y), tile);
@@ -101,7 +100,7 @@ namespace Controllers
 
             CalculateTileNeighbours();
         }
-        private async Task<BasePlayableTileElement> CreateTileElement(ITile tile)
+        private async UniTask<BasePlayableTileElement> CreateTileElement(ITile tile)
         {
             var randomPlayableTileElement = PlayableEntityType.Type1.GetRandom();
             var tileElementModel = new ElementModel((GameElementType)randomPlayableTileElement);

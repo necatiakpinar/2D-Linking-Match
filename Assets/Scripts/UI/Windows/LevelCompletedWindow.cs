@@ -19,6 +19,7 @@ namespace UI.Windows
         private readonly string _nextLevelButtonKey = "Next Level";
         private readonly string _levelKey = "Level";
         private readonly string _levelCompletedKey = "Completed";
+        
         protected async override UniTask OnInit(BaseWindowParameters parameters = null)
         {
             _parameters = parameters as LevelCompletedWindowParameters;
@@ -30,8 +31,8 @@ namespace UI.Windows
 
             var levelCompletedText = $"{_levelKey} {_parameters.LevelData.LevelIndex + 1} {_levelCompletedKey}";
             _levelCompletedLabel.text = levelCompletedText;
-
-            await _nextLevelButton.Init(_nextLevelButtonKey, OnNextLevelButtonClick);
+            
+            _nextLevelButton.Init(_nextLevelButtonKey, OnNextLevelButtonClick);
             await UniTask.CompletedTask;
         }
 
@@ -42,7 +43,6 @@ namespace UI.Windows
 
         private void OnNextLevelButtonClick()
         {
-            // Logic to load the next level
             Hide();
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }

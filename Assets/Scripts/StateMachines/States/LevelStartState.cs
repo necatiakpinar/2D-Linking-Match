@@ -48,9 +48,5 @@ namespace StateMachines.States
             RemoveEventBindings();
             await UniTask.CompletedTask;
         }
-
-        public void Update()
-        {
-        }
     }
 }

@@ -32,7 +32,7 @@ namespace UI.Windows
             var levelFailedText = $"{_levelKey} {_parameters.LevelData.LevelIndex + 1} {_levelFailedKey}";
             _levelFailedLabel.text = levelFailedText;
             
-            await _restartLevelButton.Init(_restartButtonKey, OnRestartLevelButtonClick);
+            _restartLevelButton.Init(_restartButtonKey, OnRestartLevelButtonClick);
             await UniTask.CompletedTask;
         }
 

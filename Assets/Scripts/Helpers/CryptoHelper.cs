@@ -9,13 +9,13 @@ namespace Helpers
 {
     public class CryptoHelper : ICryptoHelper
     {
-        private readonly string Key = KeyGenerator.GenerateDeviceKey();
+        private readonly string _key = KeyGenerator.GenerateDeviceKey();
 
         public string Encrypt(string plainText)
         {
             using (var aes = Aes.Create())
             {
-                aes.Key = Encoding.UTF8.GetBytes(Key);
+                aes.Key = Encoding.UTF8.GetBytes(_key);
                 aes.IV = new byte[16];
 
                 using (var encryptor = aes.CreateEncryptor(aes.Key, aes.IV))
@@ -35,7 +35,7 @@ namespace Helpers
         {
             using (var aes = Aes.Create())
             {
-                aes.Key = Encoding.UTF8.GetBytes(Key);
+                aes.Key = Encoding.UTF8.GetBytes(_key);
                 aes.IV = new byte[16];
 
                 using (var decryptor = aes.CreateDecryptor(aes.Key, aes.IV))

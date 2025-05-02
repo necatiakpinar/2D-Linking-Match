@@ -47,14 +47,13 @@ namespace Abstracts
             await UniTask.CompletedTask;
         }
 
-        public async virtual UniTask Select()
+        public virtual void Select()
         {
-            await UniTask.CompletedTask;
+            
         }
 
-        public async virtual UniTask Deselect()
+        public virtual void Deselect()
         {
-            await UniTask.CompletedTask;
         }
 
         public async virtual UniTask PlayDestroy()

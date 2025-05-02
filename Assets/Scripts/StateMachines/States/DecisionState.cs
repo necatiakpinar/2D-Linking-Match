@@ -60,10 +60,6 @@ namespace StateMachines.States
             EventBus<MoveUsedEvent>.Raise(new MoveUsedEvent());
         }
         
-        public void Update()
-        {
-        }
-
         public async UniTask Exit()
         {
             await UniTask.CompletedTask;

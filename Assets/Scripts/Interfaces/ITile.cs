@@ -13,11 +13,11 @@ namespace Interfaces
         Dictionary<TileDirectionType, ITile> Neighbours { get; set; }
         Dictionary<TileDirectionType, ITile> AboveNeighbours { get; set; }
         Dictionary<TileDirectionType, ITile> BelowNeighbours { get; set; }
-        UniTask Init(IVector2Int coordinates, ITileElement tileElement, bool isSpawner = false);
+        void Init(IVector2Int coordinates, ITileElement tileElement, bool isSpawner = false);
         void SetTileElement(ITileElement tileElement);
         bool HasTileInNeighbours(ITile tile);
-        UniTask SelectTile();
-        UniTask DeselectTile();
+        void SelectTile();
+        void DeselectTile();
         UniTask TryToActivate();
         UniTask Activate();
         UniTask<bool> TryToDropTileElement(ITile requestedTile);

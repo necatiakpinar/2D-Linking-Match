@@ -17,7 +17,7 @@ namespace Abstracts
     public class BaseTileMono : MonoBehaviour, ITile, IPointerDownHandler, IPointerEnterHandler, IPointerUpHandler
     {
         [SerializeField] private SpriteRenderer _spriteRenderer;
-        
+
         private IVector2Int _coordinates;
         private ITileElement _tileElement;
         private bool _isSpawner;
@@ -54,7 +54,7 @@ namespace Abstracts
             set => _belowNeighbours = value;
         }
 
-        public async UniTask Init(IVector2Int coordinates, ITileElement tileElement, bool isSpawner = false)
+        public async void Init(IVector2Int coordinates, ITileElement tileElement, bool isSpawner = false)
         {
             transform.name = $"Tile {coordinates.x} {coordinates.y}";
             _coordinates = coordinates;
@@ -66,7 +66,7 @@ namespace Abstracts
 
         public void SetTileElement(ITileElement tileElement)
         {
-            _tileElement = tileElement; 
+            _tileElement = tileElement;
         }
 
         public bool HasTileInNeighbours(ITile tile)
@@ -86,20 +86,20 @@ namespace Abstracts
             return false;
         }
 
-        public async UniTask SelectTile()
+        public void SelectTile()
         {
             if (_tileElement == null)
                 return;
 
-            await TileElement.Select();
+            TileElement.Select();
         }
 
-        public async UniTask DeselectTile()
+        public void DeselectTile()
         {
             if (_tileElement == null)
                 return;
 
-            await TileElement.Deselect();
+            TileElement.Deselect();
         }
 
         public async UniTask TryToActivate()
@@ -170,7 +170,7 @@ namespace Abstracts
 
                     if (aboveNeighbour.TileElement == null)
                         await aboveNeighbour.TryToRequestTileElement();
-             
+
                     if (aboveNeighbour.TileElement != null && aboveNeighbour.TileElement is IPlayableTileElement)
                     {
                         var result = await aboveNeighbour.TryToDropTileElement(this);
@@ -178,7 +178,7 @@ namespace Abstracts
                         {
                             if (!aboveNeighbour.IsSpawner)
                                 await aboveNeighbour.TryToRequestTileElement();
-                            
+
                             return;
                         }
                     }

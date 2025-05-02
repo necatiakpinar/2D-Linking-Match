@@ -56,10 +56,5 @@ namespace StateMachines
 
             EventBus<StateMachineStateChangedEvent>.Raise(new StateMachineStateChangedEvent(targetType.Name));
         }
-
-        public void Update()
-        {
-            _currentState?.Update();
-        }
     }
 }

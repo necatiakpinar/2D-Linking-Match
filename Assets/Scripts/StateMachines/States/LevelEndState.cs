@@ -31,10 +31,7 @@ namespace StateMachines.States
         public void RemoveEventBindings()
         {
         }
-
-        public void Update()
-        {
-        }
+        
 
         public async UniTask Exit()
         {
