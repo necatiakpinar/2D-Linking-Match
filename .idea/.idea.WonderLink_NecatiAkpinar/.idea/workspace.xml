@@ -6,10 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="8a0c3981-7a29-4aac-9433-6f255c47a015" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.WonderLink_NecatiAkpinar/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.WonderLink_NecatiAkpinar/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Abstracts/BaseTileElement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Abstracts/BaseTileElement.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Abstracts/BaseTileMono.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Abstracts/BaseTileMono.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Controllers/GridController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Controllers/GridController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/EventBus/EventBusManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/EventBus/EventBusManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +33,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a5ee5bd186d3469e998e7f5d03c13c9f3400/c0/1cb5dccd/JsonUtility.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Abstracts/BaseTileElement.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/EventBus/EventBusManager.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -129,7 +126,7 @@
       <updated>1746092894048</updated>
       <workItem from="1746092899233" duration="1280000" />
       <workItem from="1746188970599" duration="6857000" />
-      <workItem from="1746251168237" duration="7141000" />
+      <workItem from="1746251168237" duration="7955000" />
     </task>
     <servers />
   </component>

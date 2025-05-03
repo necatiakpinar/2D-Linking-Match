@@ -129,6 +129,7 @@ The project includes custom editor tools for development and testing:
   - Quick access through Unity's Tools menu
   - Real-time data modification
   - Persistent data management
+- **Level Editor**: Includes a custom level editor for development and testing. With this tool, you can select the current level, reset level progress, and clear all saved data easily from the Unity Editor.
 
 ## Türkçe
 
@@ -256,4 +257,5 @@ Proje, geliştirme ve test için özel editör araçları içerir:
 - **Geliştirme Özellikleri**
   - Unity'nin Araçlar menüsünden hızlı erişim
   - Gerçek zamanlı veri değişikliği
-  - Kalıcı veri yönetimi 
+  - Kalıcı veri yönetimi
+- **Seviye Editörü**: Geliştirme ve test için özel bir seviye editörü içerir. Bu araç ile mevcut seviyeyi seçebilir, seviye ilerlemesini sıfırlayabilir ve tüm kayıtlı verileri kolayca silebilirsiniz.
