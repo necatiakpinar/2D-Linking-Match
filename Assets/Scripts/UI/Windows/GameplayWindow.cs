@@ -3,6 +3,7 @@ using Addressables;
 using Cysharp.Threading.Tasks;
 using EventBus.Events;
 using EventBusSystem;
+using Helpers;
 using Interfaces;
 using TMPro;
 using UI.Widgets;
@@ -35,7 +36,12 @@ namespace UI.Windows
 
         protected async override UniTask OnInit(BaseWindowParameters parameters = null)
         {
-            _currentLevelData = EventBusNew.RaiseWithResult<GetCurrentLevelDataEvent, ILevelData>(new GetCurrentLevelDataEvent())[0];
+            _currentLevelData = EventBusNew.RaiseWithResult<GetCurrentLevelDataEvent, ILevelData>(new GetCurrentLevelDataEvent());
+            if (_currentLevelData == null)
+            {
+                LoggerUtil.LogError("Current level is null!");
+                return;
+            }
 
             _objectiveSpriteAtlas =
                 await AddressablesLoader.LoadAssetAsync<SpriteAtlas>(AddressablesKeys.GetKey(AddressablesKeys.AssetKeys.SA_Set1TileElements));

@@ -49,7 +49,7 @@ namespace Miscs
         private void Init()
         {
             //var currentLevel = EventBus<GetCurrentLevelDataEvent, ILevelData>.Raise(new GetCurrentLevelDataEvent())[0];
-            var currentLevel = EventBusNew.RaiseWithResult<GetCurrentLevelDataEvent, ILevelData>(new GetCurrentLevelDataEvent())[0];
+            var currentLevel = EventBusNew.RaiseWithResult<GetCurrentLevelDataEvent, ILevelData>(new GetCurrentLevelDataEvent());
             if (currentLevel == null)
             {
                 LoggerUtil.LogError("Current level is null!");

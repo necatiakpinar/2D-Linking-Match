@@ -107,7 +107,7 @@ namespace Controllers
                 new QuaternionAdapter(UnityEngine.Quaternion.identity.ToDataQuaternion()),
                 tile.Transform);
             //var spawnedTileElement = await EventBus<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>.Raise(spawnParameters)[0];
-            var spawnedTileElement = await EventBusNew.RaiseWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(spawnParameters)[0]; //todo: bu liste olayini kaldir
+            var spawnedTileElement = await EventBusNew.RaiseWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(spawnParameters);
             return spawnedTileElement;
         }
 

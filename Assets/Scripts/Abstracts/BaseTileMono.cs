@@ -152,7 +152,7 @@ namespace Abstracts
                     new QuaternionAdapter(Quaternion.identity.ToDataQuaternion()),
                     Transform);
                 //var spawnedTileElement = await EventBus<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>.Raise(spawnParameters)[0];
-                var spawnedTileElement = await EventBusNew.RaiseWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(spawnParameters)[0]; //todo: bu liste olayini kaldir
+                var spawnedTileElement = await EventBusNew.RaiseWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(spawnParameters);
                 if (spawnedTileElement == null)
                 {
                     LoggerUtil.LogError("Spawned tile element is null");

@@ -9,8 +9,6 @@ namespace EventBusSystem
         private static readonly Dictionary<Type, Delegate> _actions = new();
         private static readonly Dictionary<Type, Delegate> _funcs = new();
 
-        // --- ACTION-BASED EVENTS (void return) ---
-
         public static void Raise<T>(T data) where T : IEvent
         {
             Type type = typeof(T);
@@ -41,29 +39,16 @@ namespace EventBusSystem
                     _actions[type] = updated;
             }
         }
-
-        // --- FUNC-BASED EVENTS (with TResult return) ---
-
-        public static List<TResult> RaiseWithResult<T, TResult>(T data) where T : IEvent
+        
+        public static TResult RaiseWithResult<T, TResult>(T data) where T : IEvent
         {
             Type type = typeof(T);
-            var results = new List<TResult>();
-
             if (_funcs.TryGetValue(type, out var existing) && existing is Func<T, TResult> func)
-            {
-                foreach (var del in func.GetInvocationList())
-                {
-                    if (del is Func<T, TResult> typedDel)
-                    {
-                        var result = typedDel.Invoke(data);
-                        if (result is not null)
-                            results.Add(result);
-                    }
-                }
-            }
+                return func.Invoke(data);
 
-            return results;
+            return default;
         }
+
 
         public static void SubscribeWithResult<T, TResult>(Func<T, TResult> func) where T : IEvent
         {
@@ -87,7 +72,6 @@ namespace EventBusSystem
             }
         }
 
-        // Optional: clear all (useful for unit tests or scene reloads)
         public static void ClearAll()
         {
             _actions.Clear();

@@ -57,13 +57,13 @@ namespace StateMachines.States
 
         private async UniTask CheckForAnyLinkAvailable()
         {
-            await EventBusNew.RaiseWithResult<TryToCheckAnyLinkExistEvent, UniTask>(new TryToCheckAnyLinkExistEvent()); //todo: <<>()
+            await EventBusNew.RaiseWithResult<TryToCheckAnyLinkExistEvent, UniTask>(new TryToCheckAnyLinkExistEvent());
             await UniTask.CompletedTask;
         }
 
         private async UniTask<bool> CheckForLevelEnded()
         {
-            var levelFinished = await EventBusNew.RaiseWithResult<CheckForLevelEndedEvent, UniTask<bool>>(new CheckForLevelEndedEvent())[0];
+            var levelFinished = await EventBusNew.RaiseWithResult<CheckForLevelEndedEvent, UniTask<bool>>(new CheckForLevelEndedEvent());
             return levelFinished;
         }
 

@@ -44,7 +44,7 @@ namespace Controllers
         {
             _levelContainerData = levelContainerData;
             _logger = logger;
-            _gameplayData = EventBusNew.RaiseWithResult<GetPersistentDataEvent, GameplayData>(new GetPersistentDataEvent())[0];
+            _gameplayData = EventBusNew.RaiseWithResult<GetPersistentDataEvent, GameplayData>(new GetPersistentDataEvent());
             AddEventListeners();
             LoadGameplayLevel();
         }
@@ -100,20 +100,19 @@ namespace Controllers
         {
             if (_levelObjectives.Count == 0 && _currentMoveAmount > 0)
             {
-                var gameplayData = EventBusNew.RaiseWithResult<GetPersistentDataEvent, GameplayData>(new GetPersistentDataEvent())[0];
+                var gameplayData = EventBusNew.RaiseWithResult<GetPersistentDataEvent, GameplayData>(new GetPersistentDataEvent());
                 gameplayData.LevelDataController.IncreaseCurrentLevelIndex();
 
                 EventBusNew.Raise(new SaveDataEvent());
                 var levelCompletedParameters = new LevelCompletedWindowParameters(_currentLevelData);
-                await EventBusNew.RaiseWithResult<ShowWindowEvent, UniTask>(new ShowWindowEvent(WindowType.LevelCompletedWindow, levelCompletedParameters))
-                    [0];
+                await EventBusNew.RaiseWithResult<ShowWindowEvent, UniTask>(new ShowWindowEvent(WindowType.LevelCompletedWindow, levelCompletedParameters));
                 return true;
             }
 
             if (_currentMoveAmount <= 0)
             {
                 var levelFailedParameters = new LevelFailedWindowParameters(_currentLevelData);
-                await EventBusNew.RaiseWithResult<ShowWindowEvent, UniTask>(new ShowWindowEvent(WindowType.LevelFailedWindow, levelFailedParameters))[0];
+                await EventBusNew.RaiseWithResult<ShowWindowEvent, UniTask>(new ShowWindowEvent(WindowType.LevelFailedWindow, levelFailedParameters));
                 return true;
             }
 
