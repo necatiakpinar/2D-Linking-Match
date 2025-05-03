@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using Data.PersistentData;
+using EventBus;
 using EventBus.Events;
-using EventBusSystem;
 using Interfaces;
 using Interfaces.Controllers;
 using ILogger = Interfaces.ILogger;
@@ -35,12 +35,12 @@ namespace Controllers
 
         public void AddEventBindings()
         {
-            EventBusNew.Subscribe<SaveDataEvent>(SaveDataToDisk);
+            EventBusManager.Subscribe<SaveDataEvent>(SaveDataToDisk);
         }
 
         public void RemoveEventBindings()
         {
-            EventBusNew.Unsubscribe<SaveDataEvent>(SaveDataToDisk);
+            EventBusManager.Unsubscribe<SaveDataEvent>(SaveDataToDisk);
         }
 
         public void SaveDataToDisk(SaveDataEvent @event)

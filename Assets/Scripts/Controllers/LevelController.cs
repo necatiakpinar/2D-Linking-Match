@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Data.PersistentData;
+using EventBus;
 using EventBus.Events;
-using EventBusSystem;
 using Interfaces;
 using Interfaces.Controllers;
 using Miscs;
@@ -26,25 +26,25 @@ namespace Controllers
 
         public void AddEventListeners()
         {
-            EventBusNew.Subscribe<UpdateLevelObjectiveEvent>(UpdateLevelObjective);
-            EventBusNew.Subscribe<MoveUsedEvent>(MoveUsed);
-            EventBusNew.SubscribeWithResult<GetCurrentLevelDataEvent, ILevelData>(GetCurrentLevelData);
-            EventBusNew.SubscribeWithResult<CheckForLevelEndedEvent, UniTask<bool>>(CheckForLevelEnded);
+            EventBusManager.Subscribe<UpdateLevelObjectiveEvent>(UpdateLevelObjective);
+            EventBusManager.Subscribe<MoveUsedEvent>(MoveUsed);
+            EventBusManager.SubscribeWithResult<GetCurrentLevelDataEvent, ILevelData>(GetCurrentLevelData);
+            EventBusManager.SubscribeWithResult<CheckForLevelEndedEvent, UniTask<bool>>(CheckForLevelEnded);
         }
 
         public void RemoveEventListeners()
         {
-            EventBusNew.Unsubscribe<UpdateLevelObjectiveEvent>(UpdateLevelObjective);
-            EventBusNew.Unsubscribe<MoveUsedEvent>(MoveUsed);
-            EventBusNew.UnsubscribeWithResult<GetCurrentLevelDataEvent, ILevelData>(GetCurrentLevelData);
-            EventBusNew.UnsubscribeWithResult<CheckForLevelEndedEvent, UniTask<bool>>(CheckForLevelEnded);
+            EventBusManager.Unsubscribe<UpdateLevelObjectiveEvent>(UpdateLevelObjective);
+            EventBusManager.Unsubscribe<MoveUsedEvent>(MoveUsed);
+            EventBusManager.UnsubscribeWithResult<GetCurrentLevelDataEvent, ILevelData>(GetCurrentLevelData);
+            EventBusManager.UnsubscribeWithResult<CheckForLevelEndedEvent, UniTask<bool>>(CheckForLevelEnded);
         }
 
         public LevelController(ILevelContainer levelContainerData, ILogger logger)
         {
             _levelContainerData = levelContainerData;
             _logger = logger;
-            _gameplayData = EventBusNew.RaiseWithResult<GetPersistentDataEvent, GameplayData>(new GetPersistentDataEvent());
+            _gameplayData = EventBusManager.RaiseWithResult<GetPersistentDataEvent, GameplayData>(new GetPersistentDataEvent());
             AddEventListeners();
             LoadGameplayLevel();
         }
@@ -56,7 +56,7 @@ namespace Controllers
             if (_currentLevelIndex >= _levelContainerData.Levels.Count)
             {
                 _gameplayData.LevelDataController.CurrentLevelIndex = 0;
-                EventBusNew.Raise(new SaveDataEvent());
+                EventBusManager.Raise(new SaveDataEvent());
                 _currentLevelIndex = 0;
             }
 
@@ -90,7 +90,7 @@ namespace Controllers
                     }
 
                     var levelObjectiveUpdatedUI = new UpdateLevelObjectiveUIEvent(objective.ObjectiveType, objective.ObjectiveAmount);
-                    EventBusNew.Raise(levelObjectiveUpdatedUI);
+                    EventBusManager.Raise(levelObjectiveUpdatedUI);
                     break;
                 }
             }
@@ -100,19 +100,19 @@ namespace Controllers
         {
             if (_levelObjectives.Count == 0 && _currentMoveAmount > 0)
             {
-                var gameplayData = EventBusNew.RaiseWithResult<GetPersistentDataEvent, GameplayData>(new GetPersistentDataEvent());
+                var gameplayData = EventBusManager.RaiseWithResult<GetPersistentDataEvent, GameplayData>(new GetPersistentDataEvent());
                 gameplayData.LevelDataController.IncreaseCurrentLevelIndex();
 
-                EventBusNew.Raise(new SaveDataEvent());
+                EventBusManager.Raise(new SaveDataEvent());
                 var levelCompletedParameters = new LevelCompletedWindowParameters(_currentLevelData);
-                await EventBusNew.RaiseWithResult<ShowWindowEvent, UniTask>(new ShowWindowEvent(WindowType.LevelCompletedWindow, levelCompletedParameters));
+                await EventBusManager.RaiseWithResult<ShowWindowEvent, UniTask>(new ShowWindowEvent(WindowType.LevelCompletedWindow, levelCompletedParameters));
                 return true;
             }
 
             if (_currentMoveAmount <= 0)
             {
                 var levelFailedParameters = new LevelFailedWindowParameters(_currentLevelData);
-                await EventBusNew.RaiseWithResult<ShowWindowEvent, UniTask>(new ShowWindowEvent(WindowType.LevelFailedWindow, levelFailedParameters));
+                await EventBusManager.RaiseWithResult<ShowWindowEvent, UniTask>(new ShowWindowEvent(WindowType.LevelFailedWindow, levelFailedParameters));
                 return true;
             }
 
@@ -126,7 +126,7 @@ namespace Controllers
             if (_currentMoveAmount <= 0)
                 _currentMoveAmount = 0;
 
-            EventBusNew.Raise(new MoveUsedUIEvent(_currentMoveAmount));
+            EventBusManager.Raise(new MoveUsedUIEvent(_currentMoveAmount));
         }
 
         public ILevelData GetCurrentLevelData(GetCurrentLevelDataEvent @event)

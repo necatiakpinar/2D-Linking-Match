@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Interfaces;
 
-namespace EventBusSystem
+namespace EventBus
 {
-    public static class EventBusNew
+    public static class EventBusManager
     {
         private static readonly Dictionary<Type, Delegate> _actions = new();
         private static readonly Dictionary<Type, Delegate> _funcs = new();

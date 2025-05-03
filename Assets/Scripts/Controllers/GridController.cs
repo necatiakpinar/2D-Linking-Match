@@ -4,8 +4,8 @@ using Adapters;
 using Cysharp.Threading.Tasks;
 using Data;
 using Data.Models;
+using EventBus;
 using EventBus.Events;
-using EventBusSystem;
 using Extensions;
 using Interfaces;
 using Interfaces.Controllers;
@@ -65,12 +65,12 @@ namespace Controllers
 
         public void AddEventListeners()
         {
-            EventBusNew.SubscribeWithResult<TryToCheckAnyLinkExistEvent, UniTask>(TryToCheckAnyLinkExist);
+            EventBusManager.SubscribeWithResult<TryToCheckAnyLinkExistEvent, UniTask>(TryToCheckAnyLinkExist);
         }
 
         public void RemoveEventListeners()
         {
-            EventBusNew.UnsubscribeWithResult<TryToCheckAnyLinkExistEvent, UniTask>(TryToCheckAnyLinkExist);
+            EventBusManager.UnsubscribeWithResult<TryToCheckAnyLinkExistEvent, UniTask>(TryToCheckAnyLinkExist);
         }
 
         public async void CreateGrid()
@@ -107,7 +107,7 @@ namespace Controllers
                 new QuaternionAdapter(UnityEngine.Quaternion.identity.ToDataQuaternion()),
                 tile.Transform);
             //var spawnedTileElement = await EventBus<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>.Raise(spawnParameters)[0];
-            var spawnedTileElement = await EventBusNew.RaiseWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(spawnParameters);
+            var spawnedTileElement = await EventBusManager.RaiseWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(spawnParameters);
             return spawnedTileElement;
         }
 

@@ -1,7 +1,7 @@
 ﻿using Abstracts;
 using Cysharp.Threading.Tasks;
+using EventBus;
 using EventBus.Events;
-using EventBusSystem;
 using Interfaces;
 using TMPro;
 using UnityEngine;
@@ -19,12 +19,12 @@ namespace UI.Widgets
 
         private void OnEnable()
         {
-            EventBusNew.Subscribe<UpdateLevelObjectiveUIEvent>(UpdateObjective);
+            EventBusManager.Subscribe<UpdateLevelObjectiveUIEvent>(UpdateObjective);
         }
 
         private void OnDisable()
         {
-            EventBusNew.Unsubscribe<UpdateLevelObjectiveUIEvent>(UpdateObjective);
+            EventBusManager.Unsubscribe<UpdateLevelObjectiveUIEvent>(UpdateObjective);
         }
 
         public async UniTask Init(ILevelObjectiveData objectiveData, Sprite objectiveIcon)

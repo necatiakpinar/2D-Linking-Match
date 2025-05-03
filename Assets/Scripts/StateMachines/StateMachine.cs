@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using EventBus;
 using EventBus.Events;
-using EventBusSystem;
 using Interfaces;
 using ILogger = Interfaces.ILogger;
 
@@ -54,7 +54,7 @@ namespace StateMachines
             if (_currentState != null)
                 await _currentState.Enter(parameters);
 
-            EventBusNew.Raise(new StateMachineStateChangedEvent(targetType.Name));
+            EventBusManager.Raise(new StateMachineStateChangedEvent(targetType.Name));
         }
     }
 }

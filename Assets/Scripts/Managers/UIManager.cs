@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Abstracts;
 using Cysharp.Threading.Tasks;
+using EventBus;
 using EventBus.Events;
-using EventBusSystem;
 using Helpers;
 using Miscs;
 using UnityEngine;
@@ -19,18 +19,18 @@ namespace Managers
 
         private void OnEnable()
         {
-            EventBusNew.SubscribeWithResult<ShowWindowEvent, UniTask>(OnShowWindow);
-            EventBusNew.SubscribeWithResult<HideWindowEvent, UniTask>(OnHideWindow);
-            EventBusNew.SubscribeWithResult<DisposeWindowEvent, UniTask>(OnDisposeWindow);
-            EventBusNew.SubscribeWithResult<GetWindowEvent, UniTask<BaseWindow>>(GetWindow<BaseWindow>);
+            EventBusManager.SubscribeWithResult<ShowWindowEvent, UniTask>(OnShowWindow);
+            EventBusManager.SubscribeWithResult<HideWindowEvent, UniTask>(OnHideWindow);
+            EventBusManager.SubscribeWithResult<DisposeWindowEvent, UniTask>(OnDisposeWindow);
+            EventBusManager.SubscribeWithResult<GetWindowEvent, UniTask<BaseWindow>>(GetWindow<BaseWindow>);
         }
 
         private void OnDisable()
         {
-            EventBusNew.UnsubscribeWithResult<ShowWindowEvent, UniTask>(OnShowWindow);
-            EventBusNew.UnsubscribeWithResult<HideWindowEvent, UniTask>(OnHideWindow);
-            EventBusNew.UnsubscribeWithResult<DisposeWindowEvent, UniTask>(OnDisposeWindow);
-            EventBusNew.UnsubscribeWithResult<GetWindowEvent, UniTask<BaseWindow>>(GetWindow<BaseWindow>);
+            EventBusManager.UnsubscribeWithResult<ShowWindowEvent, UniTask>(OnShowWindow);
+            EventBusManager.UnsubscribeWithResult<HideWindowEvent, UniTask>(OnHideWindow);
+            EventBusManager.UnsubscribeWithResult<DisposeWindowEvent, UniTask>(OnDisposeWindow);
+            EventBusManager.UnsubscribeWithResult<GetWindowEvent, UniTask<BaseWindow>>(GetWindow<BaseWindow>);
         }
 
         private void Awake()

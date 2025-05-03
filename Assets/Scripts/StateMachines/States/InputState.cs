@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using EventBus;
 using EventBus.Events;
-using EventBusSystem;
 using Interfaces;
 using StateMachines.StateParameters;
 using ILogger = Interfaces.ILogger;
@@ -25,18 +25,18 @@ namespace StateMachines.States
 
         public void AddEventBindings()
         {
-            EventBusNew.Subscribe<TilePressedEvent>(OnTilePressed);
-            EventBusNew.Subscribe<TileReleasedEvent>(OnTileReleased);
-            EventBusNew.Subscribe<TryToAddTileEvent>(OnTryToAddTile);
-            EventBusNew.SubscribeWithResult<HasAnyTileSelected, bool>(OnHasAnyTileSelected);
+            EventBusManager.Subscribe<TilePressedEvent>(OnTilePressed);
+            EventBusManager.Subscribe<TileReleasedEvent>(OnTileReleased);
+            EventBusManager.Subscribe<TryToAddTileEvent>(OnTryToAddTile);
+            EventBusManager.SubscribeWithResult<HasAnyTileSelected, bool>(OnHasAnyTileSelected);
         }
 
         public void RemoveEventBindings()
         {
-            EventBusNew.Unsubscribe<TilePressedEvent>(OnTilePressed);
-            EventBusNew.Unsubscribe<TileReleasedEvent>(OnTileReleased);
-            EventBusNew.Unsubscribe<TryToAddTileEvent>(OnTryToAddTile);
-            EventBusNew.UnsubscribeWithResult<HasAnyTileSelected, bool>(OnHasAnyTileSelected);
+            EventBusManager.Unsubscribe<TilePressedEvent>(OnTilePressed);
+            EventBusManager.Unsubscribe<TileReleasedEvent>(OnTileReleased);
+            EventBusManager.Unsubscribe<TryToAddTileEvent>(OnTryToAddTile);
+            EventBusManager.UnsubscribeWithResult<HasAnyTileSelected, bool>(OnHasAnyTileSelected);
         }
 
         public async UniTask Enter(IStateParameters parameters = null)
@@ -57,13 +57,13 @@ namespace StateMachines.States
 
         private async UniTask CheckForAnyLinkAvailable()
         {
-            await EventBusNew.RaiseWithResult<TryToCheckAnyLinkExistEvent, UniTask>(new TryToCheckAnyLinkExistEvent());
+            await EventBusManager.RaiseWithResult<TryToCheckAnyLinkExistEvent, UniTask>(new TryToCheckAnyLinkExistEvent());
             await UniTask.CompletedTask;
         }
 
         private async UniTask<bool> CheckForLevelEnded()
         {
-            var levelFinished = await EventBusNew.RaiseWithResult<CheckForLevelEndedEvent, UniTask<bool>>(new CheckForLevelEndedEvent());
+            var levelFinished = await EventBusManager.RaiseWithResult<CheckForLevelEndedEvent, UniTask<bool>>(new CheckForLevelEndedEvent());
             return levelFinished;
         }
 

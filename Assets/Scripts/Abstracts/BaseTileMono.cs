@@ -2,8 +2,8 @@
 using Adapters;
 using Cysharp.Threading.Tasks;
 using Data.Models;
+using EventBus;
 using EventBus.Events;
-using EventBusSystem;
 using Extensions;
 using Helpers;
 using Interfaces;
@@ -152,7 +152,7 @@ namespace Abstracts
                     new QuaternionAdapter(Quaternion.identity.ToDataQuaternion()),
                     Transform);
                 //var spawnedTileElement = await EventBus<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>.Raise(spawnParameters)[0];
-                var spawnedTileElement = await EventBusNew.RaiseWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(spawnParameters);
+                var spawnedTileElement = await EventBusManager.RaiseWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(spawnParameters);
                 if (spawnedTileElement == null)
                 {
                     LoggerUtil.LogError("Spawned tile element is null");
@@ -188,17 +188,17 @@ namespace Abstracts
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            EventBusNew.Raise(new TilePressedEvent(this));
+            EventBusManager.Raise(new TilePressedEvent(this));
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            EventBusNew.Raise(new TileReleasedEvent(this));
+            EventBusManager.Raise(new TileReleasedEvent(this));
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            EventBusNew.Raise(new TryToAddTileEvent(this));
+            EventBusManager.Raise(new TryToAddTileEvent(this));
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using EventBus;
 using EventBus.Events;
-using EventBusSystem;
 using Helpers;
 using Interfaces;
 using UnityEngine;
@@ -28,12 +28,12 @@ namespace Miscs
 
         private void OnEnable()
         {
-            EventBusNew.Subscribe<LevelStartedEvent>(OnLevelStarted);
+            EventBusManager.Subscribe<LevelStartedEvent>(OnLevelStarted);
         }
 
         private void OnDisable()
         {
-            EventBusNew.Unsubscribe<LevelStartedEvent>(OnLevelStarted);
+            EventBusManager.Unsubscribe<LevelStartedEvent>(OnLevelStarted);
         }
 
         void Awake()
@@ -49,7 +49,7 @@ namespace Miscs
         private void Init()
         {
             //var currentLevel = EventBus<GetCurrentLevelDataEvent, ILevelData>.Raise(new GetCurrentLevelDataEvent())[0];
-            var currentLevel = EventBusNew.RaiseWithResult<GetCurrentLevelDataEvent, ILevelData>(new GetCurrentLevelDataEvent());
+            var currentLevel = EventBusManager.RaiseWithResult<GetCurrentLevelDataEvent, ILevelData>(new GetCurrentLevelDataEvent());
             if (currentLevel == null)
             {
                 LoggerUtil.LogError("Current level is null!");

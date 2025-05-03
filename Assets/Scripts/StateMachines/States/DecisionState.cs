@@ -1,7 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
+using EventBus;
 using EventBus.Events;
-using EventBusSystem;
 using Interfaces;
 using StateMachines.StateParameters;
 
@@ -57,7 +57,7 @@ namespace StateMachines.States
                 selectedTileNode = selectedTileNode.Next;
             }
 
-            EventBusNew.Raise(new MoveUsedEvent());
+            EventBusManager.Raise(new MoveUsedEvent());
         }
 
         public async UniTask Exit()

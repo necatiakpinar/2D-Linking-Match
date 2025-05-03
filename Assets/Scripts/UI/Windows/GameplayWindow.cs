@@ -1,8 +1,8 @@
 ﻿using Abstracts;
 using Addressables;
 using Cysharp.Threading.Tasks;
+using EventBus;
 using EventBus.Events;
-using EventBusSystem;
 using Helpers;
 using Interfaces;
 using TMPro;
@@ -26,17 +26,17 @@ namespace UI.Windows
 
         private void OnEnable()
         {
-            EventBusNew.Subscribe<MoveUsedUIEvent>(OnMoveUsed);
+            EventBusManager.Subscribe<MoveUsedUIEvent>(OnMoveUsed);
         }
 
         private void OnDisable()
         {
-            EventBusNew.Unsubscribe<MoveUsedUIEvent>(OnMoveUsed);
+            EventBusManager.Unsubscribe<MoveUsedUIEvent>(OnMoveUsed);
         }
 
         protected async override UniTask OnInit(BaseWindowParameters parameters = null)
         {
-            _currentLevelData = EventBusNew.RaiseWithResult<GetCurrentLevelDataEvent, ILevelData>(new GetCurrentLevelDataEvent());
+            _currentLevelData = EventBusManager.RaiseWithResult<GetCurrentLevelDataEvent, ILevelData>(new GetCurrentLevelDataEvent());
             if (_currentLevelData == null)
             {
                 LoggerUtil.LogError("Current level is null!");

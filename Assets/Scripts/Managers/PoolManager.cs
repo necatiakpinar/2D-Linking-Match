@@ -1,7 +1,7 @@
 ﻿using Abstracts;
 using Cysharp.Threading.Tasks;
+using EventBus;
 using EventBus.Events;
-using EventBusSystem;
 using Pools;
 using UnityEngine;
 
@@ -14,14 +14,14 @@ namespace Managers
 
         private void OnEnable()
         {
-            EventBusNew.SubscribeWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(TrySpawnPlayableTileElementPool);
-            EventBusNew.Subscribe<ReturnToPoolEvent<BasePlayableTileElement>>(TryReturnToPlayableTileElementPool);
+            EventBusManager.SubscribeWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(TrySpawnPlayableTileElementPool);
+            EventBusManager.Subscribe<ReturnToPoolEvent<BasePlayableTileElement>>(TryReturnToPlayableTileElementPool);
         }
 
         private void OnDestroy()
         {
-            EventBusNew.UnsubscribeWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(TrySpawnPlayableTileElementPool);
-            EventBusNew.Unsubscribe<ReturnToPoolEvent<BasePlayableTileElement>>(TryReturnToPlayableTileElementPool);
+            EventBusManager.UnsubscribeWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(TrySpawnPlayableTileElementPool);
+            EventBusManager.Unsubscribe<ReturnToPoolEvent<BasePlayableTileElement>>(TryReturnToPlayableTileElementPool);
         }
 
         private async UniTask<BasePlayableTileElement> TrySpawnPlayableTileElementPool(SpawnGameplayElementPoolEvent spawnGameplayElementPoolEvent)
