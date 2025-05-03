@@ -48,8 +48,7 @@ namespace EventBus
 
             return default;
         }
-
-
+        
         public static void SubscribeWithResult<T, TResult>(Func<T, TResult> func) where T : IEvent
         {
             Type type = typeof(T);

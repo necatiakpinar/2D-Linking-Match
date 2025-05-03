@@ -151,7 +151,6 @@ namespace Abstracts
                     new Vector3Adapter(Vector3.zero.ToDataVector3()),
                     new QuaternionAdapter(Quaternion.identity.ToDataQuaternion()),
                     Transform);
-                //var spawnedTileElement = await EventBus<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>.Raise(spawnParameters)[0];
                 var spawnedTileElement = await EventBusManager.RaiseWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(spawnParameters);
                 if (spawnedTileElement == null)
                 {

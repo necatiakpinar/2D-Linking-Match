@@ -106,7 +106,6 @@ namespace Controllers
                 new Vector3Adapter(Vector3.zero),
                 new QuaternionAdapter(UnityEngine.Quaternion.identity.ToDataQuaternion()),
                 tile.Transform);
-            //var spawnedTileElement = await EventBus<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>.Raise(spawnParameters)[0];
             var spawnedTileElement = await EventBusManager.RaiseWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(spawnParameters);
             return spawnedTileElement;
         }
