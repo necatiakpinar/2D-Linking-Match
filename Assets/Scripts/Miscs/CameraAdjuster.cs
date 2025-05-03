@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using EventBus;
 using EventBus.Events;
+using EventBusSystem;
 using Helpers;
 using Interfaces;
 using UnityEngine;
@@ -13,7 +13,6 @@ namespace Miscs
         private float _cameraYOffset = 2.0f;
         private IVector2Int _gridSize;
         private float _cameraX, _cameraY;
-        private EventBinding<LevelStartedEvent> _levelStartedEvent;
 
         private readonly float _cameraXOffset = 0.5f;
         private readonly float _cameraYMultiplier = 0.19f;
@@ -29,13 +28,12 @@ namespace Miscs
 
         private void OnEnable()
         {
-            _levelStartedEvent = new EventBinding<LevelStartedEvent>(OnLevelStarted);
-            EventBus<LevelStartedEvent>.Register(_levelStartedEvent);
+            EventBusNew.Subscribe<LevelStartedEvent>(OnLevelStarted);
         }
 
         private void OnDisable()
         {
-            EventBus<LevelStartedEvent>.Deregister(_levelStartedEvent);
+            EventBusNew.Unsubscribe<LevelStartedEvent>(OnLevelStarted);
         }
 
         void Awake()
@@ -50,7 +48,8 @@ namespace Miscs
 
         private void Init()
         {
-            var currentLevel = EventBus<GetCurrentLevelDataEvent, ILevelData>.Raise(new GetCurrentLevelDataEvent())[0];
+            //var currentLevel = EventBus<GetCurrentLevelDataEvent, ILevelData>.Raise(new GetCurrentLevelDataEvent())[0];
+            var currentLevel = EventBusNew.RaiseWithResult<GetCurrentLevelDataEvent, ILevelData>(new GetCurrentLevelDataEvent())[0];
             if (currentLevel == null)
             {
                 LoggerUtil.LogError("Current level is null!");

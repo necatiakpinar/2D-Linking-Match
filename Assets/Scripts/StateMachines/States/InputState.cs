@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using EventBus;
 using EventBus.Events;
+using EventBusSystem;
 using Interfaces;
 using StateMachines.StateParameters;
 using ILogger = Interfaces.ILogger;
@@ -13,11 +13,6 @@ namespace StateMachines.States
     {
         private LinkedList<ITile> _selectedTiles = new LinkedList<ITile>();
         private ITile _latestAddedTile;
-        private EventBinding<TilePressedEvent> _tilePressedEventBinding;
-        private EventBinding<TileReleasedEvent> _tileReleasedEventBinding;
-        private EventBinding<HasAnyTileSelected, bool> _hasAnyTileSelectedEventBinding;
-        private EventBinding<TryToAddTileEvent> _tryToAddTileEventBinding;
-
         public Func<Type, IStateParameters, UniTask> ChangeState { get; set; }
 
         private readonly ILogger _logger;
@@ -30,25 +25,18 @@ namespace StateMachines.States
 
         public void AddEventBindings()
         {
-            _tilePressedEventBinding = new EventBinding<TilePressedEvent>(OnTilePressed);
-            EventBus<TilePressedEvent>.Register(_tilePressedEventBinding);
-
-            _tileReleasedEventBinding = new EventBinding<TileReleasedEvent>(OnTileReleased);
-            EventBus<TileReleasedEvent>.Register(_tileReleasedEventBinding);
-
-            _hasAnyTileSelectedEventBinding = new EventBinding<HasAnyTileSelected, bool>(OnHasAnyTileSelected);
-            EventBus<HasAnyTileSelected, bool>.Register(_hasAnyTileSelectedEventBinding);
-
-            _tryToAddTileEventBinding = new EventBinding<TryToAddTileEvent>(OnTryToAddTile);
-            EventBus<TryToAddTileEvent>.Register(_tryToAddTileEventBinding);
+            EventBusNew.Subscribe<TilePressedEvent>(OnTilePressed);
+            EventBusNew.Subscribe<TileReleasedEvent>(OnTileReleased);
+            EventBusNew.Subscribe<TryToAddTileEvent>(OnTryToAddTile);
+            EventBusNew.SubscribeWithResult<HasAnyTileSelected, bool>(OnHasAnyTileSelected);
         }
 
         public void RemoveEventBindings()
         {
-            EventBus<TilePressedEvent>.Deregister(_tilePressedEventBinding);
-            EventBus<TileReleasedEvent>.Deregister(_tileReleasedEventBinding);
-            EventBus<HasAnyTileSelected, bool>.Deregister(_hasAnyTileSelectedEventBinding);
-            EventBus<TryToAddTileEvent>.Deregister(_tryToAddTileEventBinding);
+            EventBusNew.Unsubscribe<TilePressedEvent>(OnTilePressed);
+            EventBusNew.Unsubscribe<TileReleasedEvent>(OnTileReleased);
+            EventBusNew.Unsubscribe<TryToAddTileEvent>(OnTryToAddTile);
+            EventBusNew.UnsubscribeWithResult<HasAnyTileSelected, bool>(OnHasAnyTileSelected);
         }
 
         public async UniTask Enter(IStateParameters parameters = null)
@@ -69,13 +57,13 @@ namespace StateMachines.States
 
         private async UniTask CheckForAnyLinkAvailable()
         {
-            await EventBus<TryToCheckAnyLinkExistEvent, UniTask>.Raise(new TryToCheckAnyLinkExistEvent())[0];
+            await EventBusNew.RaiseWithResult<TryToCheckAnyLinkExistEvent, UniTask>(new TryToCheckAnyLinkExistEvent()); //todo: <<>()
             await UniTask.CompletedTask;
         }
 
         private async UniTask<bool> CheckForLevelEnded()
         {
-            var levelFinished = await EventBus<CheckForLevelEndedEvent, UniTask<bool>>.Raise(new CheckForLevelEndedEvent())[0];
+            var levelFinished = await EventBusNew.RaiseWithResult<CheckForLevelEndedEvent, UniTask<bool>>(new CheckForLevelEndedEvent())[0];
             return levelFinished;
         }
 

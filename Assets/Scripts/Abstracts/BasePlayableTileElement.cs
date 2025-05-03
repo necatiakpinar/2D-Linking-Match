@@ -2,8 +2,8 @@
 using Cysharp.Threading.Tasks;
 using Data.Models;
 using DG.Tweening;
-using EventBus;
 using EventBus.Events;
+using EventBusSystem;
 using Helpers;
 using Interfaces;
 using UnityEngine;
@@ -68,13 +68,15 @@ namespace Abstracts
         public void ReturnToPool(BasePlayableTileElement poolObject)
         {
             TileMono = null;
-            EventBus<ReturnToPoolEvent<BasePlayableTileElement>>.Raise(new ReturnToPoolEvent<BasePlayableTileElement>(ElementType, poolObject));
+            //EventBus<ReturnToPoolEvent<BasePlayableTileElement>>.Raise(new ReturnToPoolEvent<BasePlayableTileElement>(ElementType, poolObject));
+            EventBusNew.Raise(new ReturnToPoolEvent<BasePlayableTileElement>(ElementType, poolObject));
         }
 
         public async override UniTask PlayDestroy()
         {
             await base.PlayDestroy();
-            EventBus<UpdateLevelObjectiveEvent>.Raise(new UpdateLevelObjectiveEvent(ElementType, 1));
+            //EventBus<UpdateLevelObjectiveEvent>.Raise(new UpdateLevelObjectiveEvent(ElementType, 1));
+            EventBusNew.Raise(new UpdateLevelObjectiveEvent(ElementType, 1));
 
             Deselect();
             ReturnToPool(this);

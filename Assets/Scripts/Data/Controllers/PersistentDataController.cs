@@ -1,13 +1,12 @@
 ﻿using Data.PersistentData;
-using EventBus;
 using EventBus.Events;
+using EventBusSystem;
 
 namespace Data.Controllers
 {
     public class PersistentDataController
     {
         private readonly GameplayData _gameplayData;
-        private EventBinding<GetPersistentDataEvent, GameplayData> _getPersistentDataBinding;
 
         public GameplayData GameplayData => _gameplayData;
         public PersistentDataController(GameplayData gameplayData)
@@ -18,13 +17,12 @@ namespace Data.Controllers
 
         private void AddEventBindings()
         {
-            _getPersistentDataBinding = new EventBinding<GetPersistentDataEvent, GameplayData>(GetPersistentData);
-            EventBus<GetPersistentDataEvent, GameplayData>.Register(_getPersistentDataBinding);
+            EventBusNew.SubscribeWithResult<GetPersistentDataEvent, GameplayData>(GetPersistentData);
         }
 
         public void RemoveEventBindings()
         {
-            EventBus<GetPersistentDataEvent, GameplayData>.Deregister(_getPersistentDataBinding);
+            EventBusNew.UnsubscribeWithResult<GetPersistentDataEvent, GameplayData>(GetPersistentData);
         }
 
         private GameplayData GetPersistentData(GetPersistentDataEvent @event)

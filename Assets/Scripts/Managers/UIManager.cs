@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using Abstracts;
 using Cysharp.Threading.Tasks;
-using EventBus;
 using EventBus.Events;
+using EventBusSystem;
 using Helpers;
 using Miscs;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Managers
 {
@@ -20,18 +19,18 @@ namespace Managers
 
         private void OnEnable()
         {
-            EventBus<ShowWindowEvent, UniTask>.Register(new EventBinding<ShowWindowEvent, UniTask>(OnShowWindow));
-            EventBus<HideWindowEvent, UniTask>.Register(new EventBinding<HideWindowEvent, UniTask>(OnHideWindow));
-            EventBus<DisposeWindowEvent, UniTask>.Register(new EventBinding<DisposeWindowEvent, UniTask>(OnDisposeWindow));
-            EventBus<GetWindowEvent, UniTask<BaseWindow>>.Register(new EventBinding<GetWindowEvent, UniTask<BaseWindow>>(GetWindow<BaseWindow>));
+            EventBusNew.SubscribeWithResult<ShowWindowEvent, UniTask>(OnShowWindow);
+            EventBusNew.SubscribeWithResult<HideWindowEvent, UniTask>(OnHideWindow);
+            EventBusNew.SubscribeWithResult<DisposeWindowEvent, UniTask>(OnDisposeWindow);
+            EventBusNew.SubscribeWithResult<GetWindowEvent, UniTask<BaseWindow>>(GetWindow<BaseWindow>);
         }
 
         private void OnDisable()
         {
-            EventBus<ShowWindowEvent, UniTask>.Deregister(new EventBinding<ShowWindowEvent, UniTask>(OnShowWindow));
-            EventBus<HideWindowEvent, UniTask>.Deregister(new EventBinding<HideWindowEvent, UniTask>(OnHideWindow));
-            EventBus<DisposeWindowEvent, UniTask>.Deregister(new EventBinding<DisposeWindowEvent, UniTask>(OnDisposeWindow));
-            EventBus<GetWindowEvent, UniTask<BaseWindow>>.Deregister(new EventBinding<GetWindowEvent, UniTask<BaseWindow>>(GetWindow<BaseWindow>));
+            EventBusNew.UnsubscribeWithResult<ShowWindowEvent, UniTask>(OnShowWindow);
+            EventBusNew.UnsubscribeWithResult<HideWindowEvent, UniTask>(OnHideWindow);
+            EventBusNew.UnsubscribeWithResult<DisposeWindowEvent, UniTask>(OnDisposeWindow);
+            EventBusNew.UnsubscribeWithResult<GetWindowEvent, UniTask<BaseWindow>>(GetWindow<BaseWindow>);
         }
 
         private void Awake()

@@ -1,7 +1,6 @@
 ﻿using System;
-using Data.PersistentData;
-using EventBus;
 using EventBus.Events;
+using EventBusSystem;
 
 namespace Data.Controllers
 {
@@ -13,19 +12,19 @@ namespace Data.Controllers
         public void IncreaseCurrentLevelIndex()
         {
             CurrentLevelIndex++;
-            EventBus<SaveDataEvent>.Raise(new SaveDataEvent());
+            EventBusNew.Raise(new SaveDataEvent());
         }
 
         public void ResetCurrentLevelIndex()
         {
             CurrentLevelIndex = 0;
-            EventBus<SaveDataEvent>.Raise(new SaveDataEvent());
+            EventBusNew.Raise(new SaveDataEvent());
         }
 
         public void SetCurrentLevelIndex(int index)
         {
             CurrentLevelIndex = index;
-            EventBus<SaveDataEvent>.Raise(new SaveDataEvent());
+            EventBusNew.Raise(new SaveDataEvent());
         }
     }
 }

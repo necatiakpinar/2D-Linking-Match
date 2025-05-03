@@ -1,7 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
-using EventBus;
 using EventBus.Events;
+using EventBusSystem;
 using Interfaces;
 using Miscs;
 
@@ -20,7 +20,8 @@ namespace StateMachines.States
         public async UniTask Enter(IStateParameters parameters = null)
         {
             _logger.Log("LevelEndState.Enter");
-            EventBus<HideWindowEvent, UniTask>.Raise(new HideWindowEvent(WindowType.GameplayWindow));
+            EventBusNew.RaiseWithResult<HideWindowEvent, UniTask>(new HideWindowEvent(WindowType.GameplayWindow));
+
             await UniTask.CompletedTask;
         }
 
@@ -31,7 +32,7 @@ namespace StateMachines.States
         public void RemoveEventBindings()
         {
         }
-        
+
 
         public async UniTask Exit()
         {

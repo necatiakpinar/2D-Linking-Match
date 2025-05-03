@@ -1,7 +1,7 @@
 ﻿using Abstracts;
 using Cysharp.Threading.Tasks;
-using EventBus;
 using EventBus.Events;
+using EventBusSystem;
 using Pools;
 using UnityEngine;
 
@@ -11,24 +11,17 @@ namespace Managers
     {
         [SerializeField] private PlayableTileElementPool _playableElementPool;
 
-        private EventBinding<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>> _spawnFromPlayableTileElementPoolEventBinding;
-        private EventBinding<ReturnToPoolEvent<BasePlayableTileElement>> _returnToPlayableTileElementPoolEventBinding;
-
 
         private void OnEnable()
         {
-            _spawnFromPlayableTileElementPoolEventBinding =
-                new EventBinding<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(TrySpawnPlayableTileElementPool);
-            _returnToPlayableTileElementPoolEventBinding = new EventBinding<ReturnToPoolEvent<BasePlayableTileElement>>(TryReturnToPlayableTileElementPool);
-
-            EventBus<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>.Register(_spawnFromPlayableTileElementPoolEventBinding);
-            EventBus<ReturnToPoolEvent<BasePlayableTileElement>>.Register(_returnToPlayableTileElementPoolEventBinding);
+            EventBusNew.SubscribeWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(TrySpawnPlayableTileElementPool);
+            EventBusNew.Subscribe<ReturnToPoolEvent<BasePlayableTileElement>>(TryReturnToPlayableTileElementPool);
         }
 
         private void OnDestroy()
         {
-            EventBus<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>.Deregister(_spawnFromPlayableTileElementPoolEventBinding);
-            EventBus<ReturnToPoolEvent<BasePlayableTileElement>>.Deregister(_returnToPlayableTileElementPoolEventBinding);
+            EventBusNew.UnsubscribeWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(TrySpawnPlayableTileElementPool);
+            EventBusNew.Unsubscribe<ReturnToPoolEvent<BasePlayableTileElement>>(TryReturnToPlayableTileElementPool);
         }
 
         private async UniTask<BasePlayableTileElement> TrySpawnPlayableTileElementPool(SpawnGameplayElementPoolEvent spawnGameplayElementPoolEvent)

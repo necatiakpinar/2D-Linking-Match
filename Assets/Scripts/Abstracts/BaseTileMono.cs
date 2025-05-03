@@ -2,8 +2,8 @@
 using Adapters;
 using Cysharp.Threading.Tasks;
 using Data.Models;
-using EventBus;
 using EventBus.Events;
+using EventBusSystem;
 using Extensions;
 using Helpers;
 using Interfaces;
@@ -151,8 +151,8 @@ namespace Abstracts
                     new Vector3Adapter(Vector3.zero.ToDataVector3()),
                     new QuaternionAdapter(Quaternion.identity.ToDataQuaternion()),
                     Transform);
-                var spawnedTileElement = await EventBus<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>.Raise(spawnParameters)[0];
-
+                //var spawnedTileElement = await EventBus<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>.Raise(spawnParameters)[0];
+                var spawnedTileElement = await EventBusNew.RaiseWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(spawnParameters)[0]; //todo: bu liste olayini kaldir
                 if (spawnedTileElement == null)
                 {
                     LoggerUtil.LogError("Spawned tile element is null");
@@ -188,17 +188,17 @@ namespace Abstracts
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            EventBus<TilePressedEvent>.Raise(new TilePressedEvent(this));
+            EventBusNew.Raise(new TilePressedEvent(this));
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            EventBus<TileReleasedEvent>.Raise(new TileReleasedEvent(this));
+            EventBusNew.Raise(new TileReleasedEvent(this));
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            EventBus<TryToAddTileEvent>.Raise(new TryToAddTileEvent(this));
+            EventBusNew.Raise(new TryToAddTileEvent(this));
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Data.PersistentData;
-using EventBus;
 using EventBus.Events;
+using EventBusSystem;
 using Miscs;
 
 namespace Data.Controllers
@@ -26,7 +26,7 @@ namespace Data.Controllers
             if (isExist)
             {
                 currency.Amount += amount;
-                EventBus<SaveDataEvent>.Raise(new SaveDataEvent());
+                EventBusNew.Raise(new SaveDataEvent());
             }
         }
 
@@ -39,7 +39,7 @@ namespace Data.Controllers
                 if (currency.Amount <= 0)
                     currency.Amount = 0;
             
-                EventBus<SaveDataEvent>.Raise(new SaveDataEvent());
+                EventBusNew.Raise(new SaveDataEvent());
             }
         }
 

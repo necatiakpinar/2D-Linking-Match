@@ -1,8 +1,8 @@
 ﻿using Abstracts;
 using Addressables;
 using Cysharp.Threading.Tasks;
-using EventBus;
 using EventBus.Events;
+using EventBusSystem;
 using Interfaces;
 using TMPro;
 using UI.Widgets;
@@ -18,35 +18,35 @@ namespace UI.Windows
         [SerializeField] private Transform _objectivesParent;
         [SerializeField] private ObjectiveWidget _objectiveWidgetPf;
 
-        private EventBinding<MoveUsedUIEvent> _moveUsedUIEvent;
         private ILevelData _currentLevelData;
         private SpriteAtlas _objectiveSpriteAtlas;
 
         private readonly string _levelKey = "Level";
-        
+
         private void OnEnable()
         {
-            _moveUsedUIEvent = new EventBinding<MoveUsedUIEvent>(OnMoveUsed);
-            EventBus<MoveUsedUIEvent>.Register(_moveUsedUIEvent);
+            EventBusNew.Subscribe<MoveUsedUIEvent>(OnMoveUsed);
         }
 
         private void OnDisable()
         {
-            EventBus<MoveUsedUIEvent>.Deregister(_moveUsedUIEvent);
+            EventBusNew.Unsubscribe<MoveUsedUIEvent>(OnMoveUsed);
         }
 
         protected async override UniTask OnInit(BaseWindowParameters parameters = null)
         {
-            _currentLevelData = EventBus<GetCurrentLevelDataEvent, ILevelData>.Raise(new GetCurrentLevelDataEvent())[0];
+            _currentLevelData = EventBusNew.RaiseWithResult<GetCurrentLevelDataEvent, ILevelData>(new GetCurrentLevelDataEvent())[0];
+
             _objectiveSpriteAtlas =
                 await AddressablesLoader.LoadAssetAsync<SpriteAtlas>(AddressablesKeys.GetKey(AddressablesKeys.AssetKeys.SA_Set1TileElements));
             await CreateObjectives();
-            
-            var currentMovesText = _currentLevelData.MoveAmount.ToString();;
+
+            var currentMovesText = _currentLevelData.MoveAmount.ToString();
+            ;
             var currentLevelText = $"{_levelKey} {_currentLevelData.LevelIndex + 1}";
             _currentMovesLabel.text = currentMovesText;
             _currentLevelLabel.text = currentLevelText;
-            
+
             await UniTask.CompletedTask;
         }
 

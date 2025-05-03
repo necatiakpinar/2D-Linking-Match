@@ -4,8 +4,8 @@ using Adapters;
 using Cysharp.Threading.Tasks;
 using Data;
 using Data.Models;
-using EventBus;
 using EventBus.Events;
+using EventBusSystem;
 using Extensions;
 using Interfaces;
 using Interfaces.Controllers;
@@ -15,8 +15,6 @@ namespace Controllers
 {
     public class GridController : IGridController
     {
-        private EventBinding<TryToCheckAnyLinkExistEvent, UniTask> _tryToCheckAnyLinkExistEvent;
-
         private readonly IGridData _gridData;
         private readonly IObjectFactory _objectFactory;
         private readonly ILevelData _currentLevelData;
@@ -67,13 +65,12 @@ namespace Controllers
 
         public void AddEventListeners()
         {
-            _tryToCheckAnyLinkExistEvent = new EventBinding<TryToCheckAnyLinkExistEvent, UniTask>(TryToCheckAnyLinkExist);
-            EventBus<TryToCheckAnyLinkExistEvent, UniTask>.Register(_tryToCheckAnyLinkExistEvent);
+            EventBusNew.SubscribeWithResult<TryToCheckAnyLinkExistEvent, UniTask>(TryToCheckAnyLinkExist);
         }
 
         public void RemoveEventListeners()
         {
-            EventBus<TryToCheckAnyLinkExistEvent, UniTask>.Deregister(_tryToCheckAnyLinkExistEvent);
+            EventBusNew.UnsubscribeWithResult<TryToCheckAnyLinkExistEvent, UniTask>(TryToCheckAnyLinkExist);
         }
 
         public async void CreateGrid()
@@ -109,7 +106,8 @@ namespace Controllers
                 new Vector3Adapter(Vector3.zero),
                 new QuaternionAdapter(UnityEngine.Quaternion.identity.ToDataQuaternion()),
                 tile.Transform);
-            var spawnedTileElement = await EventBus<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>.Raise(spawnParameters)[0];
+            //var spawnedTileElement = await EventBus<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>.Raise(spawnParameters)[0];
+            var spawnedTileElement = await EventBusNew.RaiseWithResult<SpawnGameplayElementPoolEvent, UniTask<BasePlayableTileElement>>(spawnParameters)[0]; //todo: bu liste olayini kaldir
             return spawnedTileElement;
         }
 

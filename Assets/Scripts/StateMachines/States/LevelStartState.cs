@@ -1,8 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
 using Interfaces;
 using System;
-using EventBus;
 using EventBus.Events;
+using EventBusSystem;
 using Interfaces.Controllers;
 using Miscs;
 
@@ -26,7 +26,7 @@ namespace StateMachines.States
         {
 
         }
-        
+
         public void RemoveEventBindings()
         {
 
@@ -37,8 +37,8 @@ namespace StateMachines.States
             AddEventBindings();
             _logger.Log("StartingState.Enter");
             _gridController.CreateGrid();
-            EventBus<ShowWindowEvent, UniTask>.Raise(new ShowWindowEvent(WindowType.GameplayWindow, null));
-            EventBus<LevelStartedEvent>.Raise(new LevelStartedEvent());
+            EventBusNew.RaiseWithResult<ShowWindowEvent, UniTask>(new ShowWindowEvent(WindowType.GameplayWindow, null));
+            EventBusNew.Raise(new LevelStartedEvent());
             await UniTask.Delay(_initialWaitDuration);
             await ChangeState.Invoke(typeof(InputState), null);
         }

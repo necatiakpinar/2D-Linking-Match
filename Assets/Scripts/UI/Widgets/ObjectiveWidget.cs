@@ -1,7 +1,7 @@
 ﻿using Abstracts;
 using Cysharp.Threading.Tasks;
-using EventBus;
 using EventBus.Events;
+using EventBusSystem;
 using Interfaces;
 using TMPro;
 using UnityEngine;
@@ -15,18 +15,16 @@ namespace UI.Widgets
         [SerializeField] private TMP_Text _objectiveRemainingAmountLabel;
 
         private ILevelObjectiveData _objectiveData;
-        private EventBinding<UpdateLevelObjectiveUIEvent> _updateLevelObjectiveUIEventBinding;
         private readonly string _finishedText = "OK";
 
         private void OnEnable()
         {
-            _updateLevelObjectiveUIEventBinding = new EventBinding<UpdateLevelObjectiveUIEvent>(UpdateObjective);
-            EventBus<UpdateLevelObjectiveUIEvent>.Register(_updateLevelObjectiveUIEventBinding);
+            EventBusNew.Subscribe<UpdateLevelObjectiveUIEvent>(UpdateObjective);
         }
 
         private void OnDisable()
         {
-            EventBus<UpdateLevelObjectiveUIEvent>.Deregister(_updateLevelObjectiveUIEventBinding);
+            EventBusNew.Unsubscribe<UpdateLevelObjectiveUIEvent>(UpdateObjective);
         }
 
         public async UniTask Init(ILevelObjectiveData objectiveData, Sprite objectiveIcon)
